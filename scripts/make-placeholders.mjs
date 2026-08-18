@@ -91,11 +91,10 @@ const ART = {
     <circle cx="168" cy="130" r="12" />
     <path d="M84 88h48" />`,
   route: `
-    <path d="M28 138c40 0 30-52 76-52s36-56 108-56" />
+    <path d="M28 138c40 0 30-52 76-52s36-56 108-56" stroke-dasharray="14 10" />
     <circle cx="28" cy="138" r="9" />
-    <circle cx="212" cy="30" r="9" />
-    <path d="M104 86h0" />
-    <path d="M120 20 L120 44 M108 32 L132 32" />`,
+    <path d="M212 46a14 14 0 1 0-0.1 0" />
+    <path d="M212 46v18" />`,
   person: `
     <circle cx="120" cy="60" r="30" />
     <path d="M56 140a64 64 0 0 1 128 0" />`,
