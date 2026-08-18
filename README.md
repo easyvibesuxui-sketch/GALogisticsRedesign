@@ -170,9 +170,19 @@ misrepresentation, not a placeholder.
 
 ### Logo
 
-Drop the brand mark in as `public/media/logo.svg` (or `.png` / `.webp`) and it
-replaces the built-in glyph in the header. Add `logo-light.svg` as well if the
-main logo needs a different version on light sections.
+The client's badge ships at `public/media/logo.webp`, and `public/favicon.png` /
+`public/apple-touch-icon.png` are rendered from it.
+
+The `Logo` component resolves, in order:
+
+| File | Result |
+|---|---|
+| `logo-full.*` | Used alone — assumed to be a lockup that already contains the name |
+| `logo.*` | Shown as a badge beside the "GA Logistics" wordmark |
+| *(none)* | Falls back to a built-in truck glyph |
+
+`logo-light.*` is picked up on light surfaces when the main mark needs a
+different version there.
 
 ---
 
@@ -189,6 +199,11 @@ Formspree / Netlify Forms / custom endpoint URL and it posts normally.
 `src/styles/tokens.css` is the whole visual system — brand colour, ink and bone
 surfaces, the fluid type scale, spacing rhythm, easings and durations.
 
-`--brand-500` is the **only** authored brand colour. The lighter and darker
-steps derive from it, and every accent, CTA, active state and focus ring
-resolves back to it, so changing that one line re-skins the entire site.
+`--brand-500` (`#49ef45`, sampled from the GA Logistics badge) is the **only**
+authored brand colour. The lighter and darker steps derive from it, and every
+accent, CTA, active state and focus ring resolves back to it, so changing that
+one line re-skins the entire site.
+
+Because that green is light, anything printed *on* a brand fill reads
+`--accent-fg` (ink) rather than white. A darker brand colour only needs that
+one token flipped back.

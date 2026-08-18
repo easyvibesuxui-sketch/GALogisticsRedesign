@@ -38,7 +38,7 @@
 
 .btn--primary {
   background: var(--brand-500);
-  color: #fff;
+  color: var(--accent-fg);
 }
 .btn--primary::before { background: #fff; }
 .btn--primary:hover, .btn--primary:focus-visible { color: var(--ink-900); }
@@ -55,7 +55,7 @@
   color: var(--bg);
 }
 .btn--solid::before { background: var(--brand-500); }
-.btn--solid:hover, .btn--solid:focus-visible { color: #fff; }
+.btn--solid:hover, .btn--solid:focus-visible { color: var(--accent-fg); }
 
 .btn__arrow {
   width: 1.1em;

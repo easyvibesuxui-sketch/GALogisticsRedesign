@@ -96,7 +96,7 @@ are blocked the same way.
 | 2 | Exact copy from the live site | **Blocked.** Cannot read the pages. |
 | 3 | Real team roster | **Blocked.** Same reason. Portrait slots left deliberately empty. |
 | 4 | Two service slugs | See below — needs a 10-second check on your side. |
-| 5 | Logo and brand colours | **Blocked**, but the site is now ready for them: drop `public/media/logo.svg` in, and set `--brand-500` in `src/styles/tokens.css`. Nothing else changes. |
+| 5 | Logo and brand colours | **Done.** The badge you sent is in as `public/media/logo.webp` and drives the header, favicon and touch icon. `--brand-500` is now `#49ef45`, sampled from the artwork itself. |
 
 ### Unblocking
 
@@ -142,8 +142,12 @@ ranking does not carry over to the new one.
    dedicated URL surfaced. If one exists, it should be added.
 5. **Legal / footer text.** The footer carries a generated copyright line and a
    USDOT mention. Replace with the real footer text.
-6. **Media.** `npm run media:list` prints all 43 image slots the design is
+6. **Media.** `npm run media:list` prints every image slot the design is
    waiting for.
+7. **Logo lockup.** The supplied badge is a mark without the company name, so
+   the header shows it beside a "GA Logistics" wordmark. If there is an
+   official lockup that already contains the name, drop it in as
+   `public/media/logo-full.svg` and it replaces both.
 
 ## Reference site
 

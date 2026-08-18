@@ -20,8 +20,9 @@
      ONE value re-skins the site. --brand-500 is the only brand colour that is
      authored; the lighter and darker steps derive from it, and every accent,
      CTA, active state and focus ring on the site resolves back to it.
-     Swap it for the client's brand colour and the whole design follows. */
-  --brand-500: #f0552b;
+     Swap it for the client's brand colour and the whole design follows.
+     Sampled from the GA Logistics badge. */
+  --brand-500: #49ef45;
   --brand-400: color-mix(in srgb, var(--brand-500) 76%, #ffffff);
   --brand-600: color-mix(in srgb, var(--brand-500) 84%, #000000);
   --steel-400: #8d99a8;   /* cool secondary for meta text on ink */
@@ -31,11 +32,14 @@
   --bg-raised: var(--ink-800);
   --fg: #f2f3f4;
   --fg-muted: #99a1ab;
-  --fg-faint: #626a75;
+  --fg-faint: #7d8794;
   --line: rgba(255, 255, 255, 0.10);
   --line-strong: rgba(255, 255, 255, 0.20);
   --accent: var(--brand-500);
-  --accent-fg: #ffffff;
+  /* The brand green is light, so anything sitting ON it must be ink, not white.
+     Every brand-filled surface reads this token rather than hard-coding a
+     colour, so a darker brand colour only needs this one line changed. */
+  --accent-fg: var(--ink-900);
 
   /* --- Type --------------------------------------------------------------- */
   --font-display: 'Archivo', 'Archivo Fallback', 'Helvetica Neue', Arial, sans-serif;
@@ -92,9 +96,14 @@
   --bg-raised: #ffffff;
   --fg: #10131a;
   --fg-muted: #545c67;
-  --fg-faint: #8a929c;
+  --fg-faint: #656d78;
   --line: rgba(16, 19, 26, 0.12);
   --line-strong: rgba(16, 19, 26, 0.26);
+  /* The brand green is built for a black ground; at full strength it is
+     unreadable on bone. Accents darken here so brand-coloured *text* keeps a
+     usable contrast ratio, while brand-coloured *fills* stay at full strength
+     via --brand-500. */
+  --accent: color-mix(in srgb, var(--brand-500) 46%, #000000);
 }
 
 .theme-ink {
@@ -102,7 +111,7 @@
   --bg-raised: var(--ink-800);
   --fg: #f2f3f4;
   --fg-muted: #99a1ab;
-  --fg-faint: #626a75;
+  --fg-faint: #7d8794;
   --line: rgba(255, 255, 255, 0.10);
   --line-strong: rgba(255, 255, 255, 0.20);
 }
@@ -112,7 +121,7 @@
   --bg-raised: var(--ink-700);
   --fg: #f2f3f4;
   --fg-muted: #99a1ab;
-  --fg-faint: #626a75;
+  --fg-faint: #7d8794;
   --line: rgba(255, 255, 255, 0.10);
   --line-strong: rgba(255, 255, 255, 0.20);
 }

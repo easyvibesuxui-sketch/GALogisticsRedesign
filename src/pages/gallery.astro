@@ -202,7 +202,11 @@ const ratios = ['4 / 5', '1 / 1', '4 / 3', '3 / 4', '1 / 1', '4 / 5', '4 / 3', '
     color: #fff;
     transition: background-color 260ms var(--ease-out), transform 260ms var(--ease-out);
   }
-  .lb__close:hover, .lb__nav:hover { background: var(--brand-500); border-color: var(--brand-500); }
+  .lb__close:hover, .lb__nav:hover {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+    color: var(--accent-fg);
+  }
   .lb__close { top: -22px; right: -12px; }
   .lb__nav { top: 50%; transform: translateY(-50%); }
   .lb__nav svg, .lb__close svg { width: 15px; height: 15px; }

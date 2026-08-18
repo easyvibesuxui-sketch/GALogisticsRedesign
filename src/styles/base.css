@@ -45,7 +45,7 @@ ul, ol { list-style: none; padding: 0; }
   border-radius: 2px;
 }
 
-::selection { background: var(--brand-500); color: #fff; }
+::selection { background: var(--brand-500); color: var(--accent-fg); }
 
 /* ==========================================================================
    Typography
@@ -164,7 +164,7 @@ p { text-wrap: pretty; }
   z-index: 999;
   padding: 0.75rem 1.25rem;
   background: var(--brand-500);
-  color: #fff;
+  color: var(--accent-fg);
   border-radius: var(--radius-sm);
   transform: translateY(-200%);
   transition: transform var(--dur-fast) var(--ease-out);

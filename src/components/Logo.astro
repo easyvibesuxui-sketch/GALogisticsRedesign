@@ -9,6 +9,10 @@
  *
  * A second file, `logo-light.svg`, is used on light ("bone") surfaces when the
  * supplied logo is dark. If it is absent the main logo is used on both.
+ *
+ * `logo.*` is treated as a badge and keeps the company name beside it, because
+ * a mark on its own does not tell a first-time visitor who this is. Supply
+ * `logo-full.*` instead when the artwork already contains the name.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,15 +29,27 @@ const find = (name) => {
   return null;
 };
 
+const full = find('logo-full');
 const main = find('logo');
 const light = find('logo-light');
-const src = variant === 'light' ? (light || main) : main;
+const badge = variant === 'light' ? (light || main) : main;
+const src = full || badge;
 ---
 
-{src ? (
-  <img class:list={['logo', className]} src={src} alt="GA Logistics LLC" height={height} />
+{full ? (
+  <img
+    class:list={['logo logo__badge', className]}
+    src={full}
+    alt="GA Logistics LLC"
+    style={`--logo-h:${height}px`}
+  />
+) : badge ? (
+  <span class:list={['logo logo--badge', className]} style={`--logo-h:${height}px`}>
+    <img class="logo__badge" src={badge} alt="" />
+    <span class="logo__word"><strong>GA</strong> Logistics</span>
+  </span>
 ) : (
-  <span class:list={['logo logo--fallback', className]}>
+  <span class:list={['logo logo--fallback', className]} style={`--logo-h:${height}px`}>
     <span class="logo__mark" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none">
         <path d="M2 21h6l3-10h9l3 10h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -46,18 +62,26 @@ const src = variant === 'light' ? (light || main) : main;
 )}
 
 <style>
+  /* The global reset sets `img { height: auto }`, which beats the HTML height
+     attribute — so the size has to come from CSS. */
   .logo { display: block; width: auto; }
+  .logo__badge {
+    height: var(--logo-h, 30px);
+    width: auto;
+    flex: none;
+  }
 
+  .logo--badge,
   .logo--fallback {
     display: inline-flex;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0.65rem;
     font-family: var(--font-display);
     font-size: 1.0625rem;
     letter-spacing: -0.01em;
     font-weight: 500;
   }
   .logo__word strong { font-weight: 800; letter-spacing: -0.03em; }
-  .logo__mark { width: 30px; height: 30px; color: var(--brand-500); }
+  .logo__mark { width: var(--logo-h, 30px); height: var(--logo-h, 30px); color: var(--brand-500); flex: none; }
   .logo__mark svg { width: 100%; height: 100%; }
 </style>

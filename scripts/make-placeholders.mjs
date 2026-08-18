@@ -26,7 +26,7 @@ const H = 1200;
 /* Keep the plates inside the site's own palette: ink ground, brand accent.
    Distinction between slots comes from the line art, not from colour, so a
    page full of placeholders still reads as one design. Mirrors --brand-500. */
-const BRAND = '#f0552b';
+const BRAND = '#49ef45';
 
 const force = process.argv.includes('--force');
 
