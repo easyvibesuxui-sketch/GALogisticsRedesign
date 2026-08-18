@@ -1,0 +1,27 @@
+---
+const {
+  items = [],
+  speed = 0.5,
+  direction = 'left',
+  variant = 'solid',
+  label,
+} = Astro.props;
+---
+
+<div
+  class:list={['marquee', { 'marquee--outline': variant === 'outline' }]}
+  data-marquee
+  data-marquee-speed={speed}
+  data-marquee-direction={direction}
+  aria-label={label}
+  role={label ? 'img' : undefined}
+>
+  <div class="marquee__track">
+    {items.map((item) => (
+      <span class="marquee__item">
+        {item}
+        <span class="marquee__dot" aria-hidden="true"></span>
+      </span>
+    ))}
+  </div>
+</div>

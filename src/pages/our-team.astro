@@ -1,0 +1,199 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Media from '../components/Media.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+import { team } from '../data/pages.js';
+import { contact } from '../data/site.js';
+---
+
+<Base title={team.title} description={team.description}>
+  <PageHero
+    eyebrow={team.hero.eyebrow}
+    heading={team.hero.heading}
+    lead={team.hero.lead}
+    media={team.hero.media}
+    crumbs={[{ label: 'Our Team' }]}
+  />
+
+  <!-- 01 — Structure ------------------------------------------------------ -->
+  <section class="tstruct theme-ink section">
+    <div class="shell tstruct__grid">
+      <div>
+        <span class="sec-head__index" data-reveal="fade">[{team.structure.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
+          {team.structure.eyebrow}
+        </p>
+        <h2 class="tstruct__title" data-split data-reveal-delay="120">{team.structure.heading}</h2>
+      </div>
+      <div class="tstruct__copy">
+        {team.structure.body.map((paragraph) => (
+          <p class="u-lead" data-reveal="blur" data-reveal-delay="280">{paragraph}</p>
+        ))}
+        <ul class="tstruct__facts" data-reveal-group="90">
+          <li data-reveal="up"><strong>24/7</strong><span>Dispatch coverage</span></li>
+          <li data-reveal="up"><strong>Multiple</strong><span>Languages spoken</span></li>
+          <li data-reveal="up"><strong>Per desk</strong><span>Its own team leader</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — People --------------------------------------------------------- -->
+  <section class="people theme-bone section">
+    <div class="shell">
+      <SectionHead
+        index="02"
+        eyebrow="The desks"
+        heading="Dispatchers and team leaders."
+        aside="Names and portraits below — send the client photos and we drop them straight in."
+      />
+
+      <ul class="people__grid" data-reveal-group="110">
+        {team.members.map((member) => (
+          <li class="person" data-reveal="up">
+            <div class="person__media">
+              <Media name={member.media} alt={member.name} ratio="3 / 4" reveal={null} />
+              <span class="person__badge">{member.role.split('·')[0].trim()}</span>
+            </div>
+            <div class="person__body">
+              <h3 class="person__name">{member.name}</h3>
+              <p class="person__role">{member.role}</p>
+              {member.note && <p class="person__note">{member.note}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 — Reach the desk -------------------------------------------------- -->
+  <section class="tdesk theme-ink section">
+    <div class="shell tdesk__grid">
+      <h2 class="tdesk__title" data-split>Reach a desk directly.</h2>
+      <ul class="tdesk__list" data-reveal-group="90">
+        {contact.emails.map((email) => (
+          <li data-reveal="up">
+            <span class="tdesk__role">{email.role}</span>
+            <a class="tdesk__mail" href={email.href}>{email.label}</a>
+          </li>
+        ))}
+        <li data-reveal="up">
+          <span class="tdesk__role">Phone</span>
+          <a class="tdesk__mail" href={contact.phone.href}>{contact.phone.label}</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Join us"
+    heading="Driving with GA Logistics."
+    body="GA Logistics LLC has put in many measures to take care of their drivers and ensure safety."
+    actions={[
+      { label: 'Contact Us', href: '/contact-us/', variant: 'solid' },
+      { label: 'Our Services', href: '/our-services/', variant: 'ghost' },
+    ]}
+  />
+</Base>
+
+<style>
+  .tstruct__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .tstruct__title { margin-top: 1.1rem; max-width: 13ch; }
+
+  .tstruct__facts {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .tstruct__facts li { display: grid; gap: 0.35rem; padding-top: 1rem; border-top: 1px solid var(--line-strong); }
+  .tstruct__facts strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .tstruct__facts span { font-size: 0.8125rem; color: var(--fg-muted); }
+
+  .people__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 0.6rem + 1.6vw, 2.25rem);
+  }
+
+  .person { display: grid; gap: 1.1rem; }
+  .person__media { position: relative; overflow: hidden; border-radius: var(--radius-lg); }
+  .person__media :global(img) { transition: transform 1.1s var(--ease-out); }
+  .person:hover .person__media :global(img) { transform: scale(1.05); }
+
+  .person__badge {
+    position: absolute;
+    left: 0.85rem;
+    bottom: 0.85rem;
+    z-index: 2;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45em 0.85em;
+    border-radius: var(--radius-pill);
+    background: rgba(8, 9, 11, 0.65);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: opacity 380ms var(--ease-out), transform 460ms var(--ease-mask);
+  }
+  .person:hover .person__badge { opacity: 1; transform: none; }
+
+  .person__body { display: grid; gap: 0.3rem; }
+  .person__name { font-size: var(--fs-h4); }
+  .person__role { font-size: 0.8125rem; color: var(--fg-muted); }
+  .person__note { font-size: 0.8125rem; color: var(--fg-faint); margin-top: 0.35rem; }
+
+  .tdesk__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+  }
+  .tdesk__title { max-width: 11ch; }
+  .tdesk__list { display: grid; }
+  .tdesk__list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .tdesk__list li:last-child { border-bottom: 1px solid var(--line); }
+  .tdesk__role { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-faint); }
+  .tdesk__mail {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-h4);
+    letter-spacing: -0.03em;
+    text-align: right;
+  }
+  .tdesk__mail:hover { color: var(--brand-400); }
+
+  @media (max-width: 1100px) { .people__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 900px) {
+    .tstruct__grid, .tdesk__grid { grid-template-columns: 1fr; }
+    .people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .tstruct__facts { grid-template-columns: 1fr; }
+    .tdesk__list li { flex-direction: column; }
+    .tdesk__mail { text-align: left; }
+  }
+</style>

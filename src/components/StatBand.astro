@@ -1,0 +1,70 @@
+---
+import { stats } from '../data/site.js';
+const { index, eyebrow, heading } = Astro.props;
+---
+
+<section class="statband theme-bone section">
+  <div class="shell">
+    <header class="statband__head">
+      <div>
+        {index && <span class="sec-head__index" data-reveal="fade">[{index}]</span>}
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">{eyebrow}</p>
+      </div>
+      <h2 class="statband__title" data-split data-reveal-delay="120">{heading}</h2>
+    </header>
+
+    <ol class="statband__grid">
+      {stats.map((stat, i) => (
+        <li class="statband__item" data-reveal="up" data-reveal-delay={i * 110}>
+          <span class="statband__value u-num">
+            <span data-count={stat.value}>{stat.value}</span><em>{stat.suffix}</em>
+          </span>
+          <span class="statband__rule" data-reveal="rule" data-reveal-delay={i * 110 + 260}></span>
+          <span class="statband__label">{stat.label}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .statband { background: var(--bg); color: var(--fg); }
+
+  .statband__head {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .statband__title { max-width: 16ch; }
+
+  .statband__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+
+  .statband__item { display: grid; gap: 1rem; align-content: start; }
+
+  .statband__value {
+    font-size: clamp(3rem, 1.6rem + 5.4vw, 7rem);
+    font-weight: 800;
+    line-height: 0.85;
+    letter-spacing: -0.055em;
+  }
+  .statband__value em { font-style: normal; color: var(--accent); }
+
+  .statband__rule { display: block; height: 1px; background: var(--line-strong); }
+
+  .statband__label {
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    max-width: 22ch;
+  }
+
+  @media (max-width: 900px) {
+    .statband__head { grid-template-columns: 1fr; }
+    .statband__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

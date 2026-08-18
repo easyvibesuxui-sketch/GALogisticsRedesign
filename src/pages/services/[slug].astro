@@ -1,0 +1,258 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Media from '../../components/Media.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Button from '../../components/Button.astro';
+
+import { services } from '../../data/services.js';
+import { contact } from '../../data/site.js';
+
+export function getStaticPaths() {
+  return services.map((service, i) => ({
+    params: { slug: service.slug },
+    props: {
+      service,
+      next: services[(i + 1) % services.length],
+      others: services.filter((item) => item.slug !== service.slug).slice(0, 4),
+    },
+  }));
+}
+
+const { service, next, others } = Astro.props;
+---
+
+<Base
+  title={`${service.title} | GA Logistics LLC`}
+  description={service.summary}
+>
+  <PageHero
+    eyebrow={service.eyebrow}
+    heading={service.title}
+    lead={service.summary}
+    media={service.media.hero}
+    crumbs={[{ label: 'Our Services', href: '/our-services/' }, { label: service.label }]}
+  />
+
+  <!-- Intro + specs -------------------------------------------------------- -->
+  <section class="sintro theme-ink section" data-parallax-scope>
+    <div class="shell sintro__grid">
+      <div class="sintro__copy">
+        <span class="sec-head__index" data-reveal="fade">[{service.index}]</span>
+        <div class="sintro__body">
+          {service.intro.map((paragraph, i) => (
+            <p class="sintro__p" data-split data-reveal-delay={i * 120}>{paragraph}</p>
+          ))}
+        </div>
+        <div class="sintro__actions" data-reveal="up" data-reveal-delay="420">
+          <Button href="/contact-us/" label="Request this service" variant="primary" />
+          <a href={contact.phone.href} class="link-line">{contact.phone.label}</a>
+        </div>
+      </div>
+
+      <aside class="specs" aria-label="Service details">
+        <p class="specs__title">Details</p>
+        <dl class="specs__list" data-reveal-group="80">
+          {service.specs.map((spec) => (
+            <div class="specs__row" data-reveal="up">
+              <dt>{spec.k}</dt>
+              <dd>{spec.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Points --------------------------------------------------------------- -->
+  <section class="points theme-bone section">
+    <div class="shell">
+      <SectionHead index="02" eyebrow="What it includes" heading={`Inside ${service.label.toLowerCase()}.`} />
+      <ol class="points__grid" data-reveal-group="100">
+        {service.points.map((point, i) => (
+          <li class="point" data-reveal="up">
+            <span class="point__n u-num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="point__title">{point.title}</h3>
+            <p class="point__text">{point.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Media pair ----------------------------------------------------------- -->
+  <section class="spair theme-ink section" data-parallax-scope>
+    <div class="shell spair__grid">
+      <Media name={service.media.gallery[0]} alt={service.title} ratio="4 / 5" parallax parallaxSpeed="0.11" revealFrom="left" />
+      <Media name={service.media.gallery[1]} alt={service.title} ratio="4 / 5" parallax parallaxSpeed="0.05" revealDelay="140" />
+    </div>
+  </section>
+
+  <!-- Other services -------------------------------------------------------- -->
+  <section class="others theme-ink section" style="padding-top:0">
+    <div class="shell">
+      <SectionHead index="03" eyebrow="Keep looking" heading="Other services." />
+      <ul class="others__list">
+        {others.map((item) => (
+          <li>
+            <a class="others__link" href={`/services/${item.slug}/`}>
+              <span class="others__n u-num">{item.index}</span>
+              <span class="others__title">{item.title}</span>
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 13L13 3M13 3H5M13 3v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a class="nextup" href={`/services/${next.slug}/`}>
+        <span class="nextup__label">Next service</span>
+        <span class="nextup__title">{next.title}</span>
+      </a>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Get in touch"
+    heading="Tell dispatch what you need."
+    body="24/7 dispatching services in multiple languages."
+    actions={[
+      { label: 'Contact Us', href: '/contact-us/', variant: 'solid' },
+      { label: 'All services', href: '/our-services/', variant: 'ghost' },
+    ]}
+  />
+</Base>
+
+<style>
+  .sintro__grid {
+    display: grid;
+    grid-template-columns: 1.35fr 0.65fr;
+    gap: clamp(2rem, 1rem + 4vw, 6rem);
+    align-items: start;
+  }
+
+  .sintro__body { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+  .sintro__p {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 0.95rem + 1.5vw, 2.125rem);
+    line-height: 1.25;
+    letter-spacing: -0.035em;
+    max-width: 24ch;
+  }
+  .sintro__p + .sintro__p {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    letter-spacing: -0.012em;
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .sintro__actions {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .specs {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    background: var(--bg-raised);
+  }
+  .specs__title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin-bottom: 1.25rem;
+  }
+  .specs__row {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .specs__row dt { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-faint); }
+  .specs__row dd { font-size: var(--fs-body-sm); font-weight: 500; }
+
+  .points__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  .point { display: grid; gap: 0.75rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--line-strong); }
+  .point__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--brand-500); }
+  .point__title { font-size: var(--fs-h4); }
+  .point__text { color: var(--fg-muted); font-size: var(--fs-body-sm); }
+
+  .spair__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    align-items: start;
+  }
+  .spair__grid > :global(:last-child) { margin-top: clamp(2rem, 1rem + 5vw, 7rem); }
+
+  .others__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(1.5rem, 1rem + 2vw, 3rem); }
+  .others__link {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--line);
+    transition: padding-inline 460ms var(--ease-mask);
+  }
+  .others__link:hover { padding-inline: 0.75rem; }
+  .others__n { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--fg-faint); }
+  .others__title { font-size: var(--fs-h4); font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; }
+  .others__link svg { width: 14px; height: 14px; opacity: 0.5; transition: all 320ms var(--ease-out); }
+  .others__link:hover svg { opacity: 1; transform: translate(2px, -2px); color: var(--brand-400); }
+
+  .nextup {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 5rem);
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    transition: border-color 320ms var(--ease-out), background-color 420ms var(--ease-out);
+  }
+  .nextup:hover { border-color: var(--brand-500); background: color-mix(in srgb, var(--brand-500) 8%, transparent); }
+  .nextup__label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+  .nextup__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3.25rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  @media (max-width: 1000px) {
+    .sintro__grid { grid-template-columns: 1fr; }
+    .specs { position: static; }
+    .points__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .others__list { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .points__grid { grid-template-columns: 1fr; }
+    .spair__grid { grid-template-columns: 1fr; }
+    .spair__grid > :global(:last-child) { margin-top: 0; }
+  }
+</style>

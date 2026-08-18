@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Media from '../components/Media.astro';
+import SectionHead from '../components/SectionHead.astro';
+import StatBand from '../components/StatBand.astro';
+import Marquee from '../components/Marquee.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+
+import { about, home } from '../data/pages.js';
+---
+
+<Base title={about.title} description={about.description}>
+  <PageHero
+    eyebrow={about.hero.eyebrow}
+    heading={about.hero.heading}
+    lead={about.hero.lead}
+    media={about.hero.media}
+    crumbs={[{ label: 'About Us' }]}
+  />
+
+  <!-- 01 — Story ---------------------------------------------------------- -->
+  <section class="story theme-bone section" data-parallax-scope>
+    <div class="shell story__grid">
+      <div class="story__figure">
+        <Media
+          name={about.story.figure.media}
+          alt="GA Logistics LLC founders"
+          ratio="4 / 5"
+          parallax
+          parallaxSpeed="0.1"
+          revealFrom="left"
+        >
+          <Fragment slot="caption">{about.story.figure.caption}</Fragment>
+        </Media>
+      </div>
+
+      <div class="story__copy">
+        <span class="sec-head__index" data-reveal="fade">[{about.story.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
+          {about.story.eyebrow}
+        </p>
+        <h2 class="story__title" data-split data-reveal-delay="120">{about.story.heading}</h2>
+        <div class="story__body" data-reveal-group="90" data-reveal-delay="320">
+          {about.story.body.map((paragraph) => <p class="u-body" data-reveal="up">{paragraph}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — Values --------------------------------------------------------- -->
+  <section class="values theme-ink section">
+    <div class="shell">
+      <SectionHead index={about.values.index} eyebrow={about.values.eyebrow} heading={about.values.heading} />
+      <ol class="values__list">
+        {about.values.items.map((item, i) => (
+          <li class="value" data-reveal="up" data-reveal-delay={i * 130}>
+            <span class="value__n u-num">{item.n}</span>
+            <h3 class="value__title">{item.title}</h3>
+            <p class="value__text">{item.text}</p>
+            <span class="value__rule" data-reveal="rule" data-reveal-delay={i * 130 + 280}></span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <StatBand index="03" eyebrow="By the numbers" heading="What ten years builds." />
+
+  <!-- 03 — Fleet ---------------------------------------------------------- -->
+  <section class="fleet theme-ink section" data-parallax-scope>
+    <div class="shell">
+      <SectionHead index={about.fleet.index} eyebrow={about.fleet.eyebrow} heading={about.fleet.heading}>
+        <div class="fleet__body">
+          {about.fleet.body.map((paragraph) => <p class="u-body">{paragraph}</p>)}
+        </div>
+      </SectionHead>
+
+      <ul class="fleet__tags" data-reveal-group="70">
+        {about.fleet.equipment.map((item) => (
+          <li class="fleet__tag" data-reveal="scale">{item}</li>
+        ))}
+      </ul>
+
+      <div class="fleet__media">
+        <Media name="about-fleet" alt="GA Logistics LLC fleet" ratio="21 / 9" parallax parallaxSpeed="0.08" />
+      </div>
+    </div>
+  </section>
+
+  <section class="ticker theme-ink" aria-hidden="true">
+    <Marquee items={home.ticker} speed={0.4} direction="left" variant="outline" />
+  </section>
+
+  <!-- 04 — Driver care ----------------------------------------------------- -->
+  <section class="care theme-bone section">
+    <div class="shell care__grid">
+      <div>
+        <span class="sec-head__index" data-reveal="fade">[{about.care.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">{about.care.eyebrow}</p>
+        <h2 class="care__title" data-split data-reveal-delay="120">{about.care.heading}</h2>
+      </div>
+      <div class="care__copy">
+        {about.care.body.map((paragraph) => (
+          <p class="u-lead" data-reveal="blur" data-reveal-delay="260">{paragraph}</p>
+        ))}
+        <div data-reveal="up" data-reveal-delay="440" style="margin-top:2rem">
+          <Button href="/our-team/" label="Meet the team" variant="solid" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Work with us"
+    heading="Capacity, when you need it."
+    body="Dispatch answers around the clock, in multiple languages."
+    actions={[
+      { label: 'Contact Us', href: '/contact-us/', variant: 'solid' },
+      { label: 'Our Services', href: '/our-services/', variant: 'ghost' },
+    ]}
+  />
+</Base>
+
+<style>
+  .story__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 1rem + 5vw, 6.5rem);
+    align-items: center;
+  }
+  .story__title { margin-top: 1.1rem; max-width: 15ch; }
+  .story__body { margin-top: 1.75rem; display: grid; gap: 1.15rem; }
+
+  .values__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2.5vw, 4rem);
+  }
+  .value { display: grid; gap: 0.9rem; align-content: start; padding-top: 1.5rem; position: relative; }
+  .value__rule {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--line-strong);
+  }
+  .value__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--brand-500); }
+  .value__title { font-size: var(--fs-h4); }
+  .value__text { color: var(--fg-muted); font-size: var(--fs-body-sm); }
+
+  .fleet__body { display: grid; gap: 1rem; }
+  .fleet__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .fleet__tag {
+    padding: 0.7em 1.2em;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    transition: border-color 300ms var(--ease-out), color 300ms var(--ease-out);
+  }
+  .fleet__tag:hover { border-color: var(--brand-500); color: var(--fg); }
+
+  .ticker {
+    background: var(--ink-850);
+    border-block: 1px solid var(--line);
+    padding-block: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    overflow: hidden;
+  }
+
+  .care__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .care__title { margin-top: 1.1rem; max-width: 12ch; }
+
+  @media (max-width: 1000px) {
+    .story__grid, .care__grid { grid-template-columns: 1fr; }
+    .values__list { grid-template-columns: 1fr; }
+  }
+</style>

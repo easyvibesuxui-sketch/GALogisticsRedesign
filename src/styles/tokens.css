@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Design tokens — single source of truth for the whole redesign.
+   Re-skinning the site (brand colours, type scale, motion feel) happens here.
+   ========================================================================== */
+
+:root {
+  /* --- Colour: ink surfaces ---------------------------------------------- */
+  --ink-900: #08090b;
+  --ink-850: #0b0d10;
+  --ink-800: #101317;
+  --ink-700: #171b21;
+  --ink-600: #21262e;
+
+  /* --- Colour: bone surfaces --------------------------------------------- */
+  --bone-100: #f6f5f2;
+  --bone-200: #eceae5;
+  --bone-300: #dddad2;
+
+  /* --- Colour: brand ------------------------------------------------------ */
+  --brand-500: #f0552b;   /* signal orange — CTAs, accents, active states */
+  --brand-400: #ff6f45;
+  --brand-600: #cf4118;
+  --steel-400: #8d99a8;   /* cool secondary for meta text on ink */
+
+  /* --- Semantic (dark section default) ------------------------------------ */
+  --bg: var(--ink-900);
+  --bg-raised: var(--ink-800);
+  --fg: #f2f3f4;
+  --fg-muted: #99a1ab;
+  --fg-faint: #626a75;
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.20);
+  --accent: var(--brand-500);
+  --accent-fg: #ffffff;
+
+  /* --- Type --------------------------------------------------------------- */
+  --font-display: 'Archivo', 'Archivo Fallback', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter Tight', 'Inter Tight Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, monospace;
+
+  /* Fluid scale — clamp(min, preferred, max) between 360px and 1600px */
+  --fs-eyebrow: clamp(0.688rem, 0.63rem + 0.18vw, 0.813rem);
+  --fs-body-sm: clamp(0.875rem, 0.84rem + 0.12vw, 0.938rem);
+  --fs-body: clamp(0.975rem, 0.93rem + 0.22vw, 1.125rem);
+  --fs-lead: clamp(1.125rem, 1.02rem + 0.48vw, 1.5rem);
+  --fs-h4: clamp(1.125rem, 1.03rem + 0.42vw, 1.438rem);
+  --fs-h3: clamp(1.375rem, 1.16rem + 0.95vw, 2.125rem);
+  --fs-h2: clamp(2rem, 1.42rem + 2.6vw, 4.25rem);
+  --fs-h1: clamp(2.75rem, 1.6rem + 5.1vw, 7rem);
+  --fs-mega: clamp(3.5rem, 0.9rem + 11.5vw, 15rem);
+
+  --lh-tight: 0.94;
+  --lh-snug: 1.08;
+  --lh-body: 1.62;
+  --tr-tight: -0.035em;
+  --tr-wide: 0.16em;
+
+  /* --- Space -------------------------------------------------------------- */
+  --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 4.5rem);
+  --shell: 1680px;
+  --measure: 62ch;
+  --section-y: clamp(4.5rem, 2.5rem + 8vw, 11rem);
+  --radius-sm: 4px;
+  --radius: 10px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* --- Motion ------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-mask: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 220ms;
+  --dur: 480ms;
+  --dur-slow: 900ms;
+
+  /* --- Elevation ---------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow: 0 18px 44px -22px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 44px 90px -40px rgba(0, 0, 0, 0.85);
+
+  --header-h: 76px;
+}
+
+/* Light ("bone") surfaces flip the semantic layer, so every component keeps
+   working unchanged inside either kind of section. */
+.theme-bone {
+  --bg: var(--bone-100);
+  --bg-raised: #ffffff;
+  --fg: #10131a;
+  --fg-muted: #545c67;
+  --fg-faint: #8a929c;
+  --line: rgba(16, 19, 26, 0.12);
+  --line-strong: rgba(16, 19, 26, 0.26);
+}
+
+.theme-ink {
+  --bg: var(--ink-900);
+  --bg-raised: var(--ink-800);
+  --fg: #f2f3f4;
+  --fg-muted: #99a1ab;
+  --fg-faint: #626a75;
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.20);
+}
+
+.theme-raised {
+  --bg: var(--ink-850);
+  --bg-raised: var(--ink-700);
+  --fg: #f2f3f4;
+  --fg-muted: #99a1ab;
+  --fg-faint: #626a75;
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.20);
+}

@@ -1,0 +1,232 @@
+---
+import Media from './Media.astro';
+import Button from './Button.astro';
+import { stats } from '../data/site.js';
+
+const { hero } = Astro.props;
+---
+
+<section class="hero theme-ink" data-parallax-scope>
+  <div class="hero__bg">
+    <div class="hero__media" data-hero-media>
+      <Media name={hero.media} alt="" ratio="16 / 9" reveal={null} loading="eager" class="hero__mediaslot" />
+    </div>
+    <div class="hero__veil" data-hero-veil></div>
+    <div class="hero__lines" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="shell hero__inner">
+    <div class="hero__copy" data-hero-copy>
+      <p class="u-eyebrow hero__eyebrow" data-reveal="up">{hero.eyebrow}</p>
+      <h1 class="hero__title" data-split data-split-step="105" data-reveal-delay="120">{hero.heading}</h1>
+      <p class="hero__lead" data-reveal="blur" data-reveal-delay="620">{hero.lead}</p>
+      <div class="hero__actions" data-reveal-group="90" data-reveal-delay="760">
+        {hero.actions.map((action) => (
+          <div data-reveal="up">
+            <Button href={action.href} label={action.label} variant={action.variant} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__foot">
+    <div class="shell hero__footinner">
+      <ul class="hero__stats" data-reveal-group="70" data-reveal-delay="420">
+        {stats.map((stat) => (
+          <li class="hero__stat" data-reveal="up">
+            <span class="hero__stat-value u-num">
+              <span data-count={stat.value}>{stat.value}</span>{stat.suffix}
+            </span>
+            <span class="hero__stat-label">{stat.label}</span>
+          </li>
+        ))}
+      </ul>
+
+      <a class="hero__cue" href="#after-hero" aria-label="Scroll to content">
+        <span class="hero__cue-label">{hero.scrollCue}</span>
+        <span class="hero__cue-rail" aria-hidden="true"><i></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+<span id="after-hero"></span>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: end;
+    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 6vw, 8rem));
+    padding-bottom: 0;
+    background: var(--ink-900);
+    color: var(--fg);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero__bg { position: absolute; inset: 0; z-index: -2; }
+
+  .hero__media { position: absolute; inset: 0; will-change: transform; }
+  .hero__media :global(.media),
+  .hero__media :global(.media__frame) {
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: 0;
+  }
+  .hero__media :global(.media__layer) { inset: 0; height: 100%; }
+
+  /* Full-bleed media: park the placeholder label instead of centring it over
+     the headline. */
+  .hero__media :global(.media__placeholder) { place-items: end start; }
+  .hero__media :global(.media__slot) { margin: 0 0 clamp(9rem, 16vh, 12rem) var(--gutter); }
+
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(8, 9, 11, 0.86) 0%, rgba(8, 9, 11, 0.42) 34%, rgba(8, 9, 11, 0.94) 100%),
+      linear-gradient(90deg, rgba(8, 9, 11, 0.9) 0%, rgba(8, 9, 11, 0.25) 62%, rgba(8, 9, 11, 0.55) 100%);
+  }
+
+  /* Column rules: a quiet grid that gives the type something to sit against. */
+  .hero__lines {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+  .hero__lines span {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: hero-rule 1.6s var(--ease-mask) forwards;
+  }
+  .hero__lines span:nth-child(2) { animation-delay: 90ms; }
+  .hero__lines span:nth-child(3) { animation-delay: 180ms; }
+  .hero__lines span:nth-child(4) { animation-delay: 270ms; }
+  .hero__lines span:nth-child(5) { animation-delay: 360ms; }
+  @keyframes hero-rule { to { transform: scaleY(1); } }
+
+  .hero__inner { width: 100%; padding-bottom: clamp(3rem, 2rem + 5vw, 7rem); }
+
+  .hero__copy { max-width: min(1180px, 100%); }
+
+  .hero__title {
+    margin-top: 1.5rem;
+    font-size: var(--fs-h1);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+
+  .hero__lead {
+    margin-top: clamp(1.5rem, 1rem + 1.4vw, 2.5rem);
+    max-width: 58ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: rgba(242, 243, 244, 0.72);
+    letter-spacing: -0.012em;
+  }
+
+  .hero__actions {
+    margin-top: clamp(2rem, 1.4rem + 1.8vw, 3rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  /* --- foot bar ---------------------------------------------------------- */
+
+  .hero__foot {
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--ink-900) 55%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero__footinner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: clamp(1.25rem, 1rem + 1vw, 2rem);
+  }
+
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 0.5rem + 2vw, 3.5rem);
+    flex: 1;
+  }
+
+  .hero__stat { display: grid; gap: 0.3rem; }
+
+  .hero__stat-value {
+    font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .hero__stat-value :global(span) { font-variant-numeric: tabular-nums; }
+
+  .hero__stat-label {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--fg-faint);
+    max-width: 20ch;
+  }
+
+  .hero__cue {
+    display: inline-grid;
+    justify-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+  .hero__cue-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+  .hero__cue-rail {
+    display: block;
+    width: 1px;
+    height: 46px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero__cue-rail i {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 1px;
+    height: 40%;
+    background: var(--brand-500);
+    animation: cue-run 2.1s var(--ease-in-out) infinite;
+  }
+  @keyframes cue-run {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(250%); }
+  }
+
+  @media (max-width: 1024px) {
+    .hero__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero__cue { display: none; }
+  }
+  @media (max-width: 560px) {
+    .hero__stats { gap: 1rem 1.25rem; }
+    .hero__stat-label { font-size: 0.6875rem; }
+  }
+</style>

@@ -1,0 +1,303 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import Media from '../components/Media.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceTrack from '../components/ServiceTrack.astro';
+import StatBand from '../components/StatBand.astro';
+import PillarStack from '../components/PillarStack.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+
+import { home } from '../data/pages.js';
+import { gallery } from '../data/pages.js';
+---
+
+<Base title={`${home.title} | GA Logistics LLC`} description={home.description}>
+  <Hero hero={home.hero} />
+
+  <!-- Ticker: two lanes running against each other, nudged by scroll velocity -->
+  <section class="ticker theme-ink" aria-hidden="true">
+    <Marquee items={home.ticker} speed={0.45} direction="left" />
+    <Marquee items={home.ticker} speed={0.35} direction="right" variant="outline" />
+  </section>
+
+  <!-- 01 — Who we are ---------------------------------------------------- -->
+  <section class="intro theme-bone section" data-parallax-scope>
+    <div class="shell intro__grid">
+      <div class="intro__copy">
+        <span class="sec-head__index" data-reveal="fade">[{home.intro.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
+          {home.intro.eyebrow}
+        </p>
+        <h2 class="intro__title" data-split data-reveal-delay="120">{home.intro.heading}</h2>
+        <div class="intro__body" data-reveal-group="90" data-reveal-delay="300">
+          {home.intro.body.map((paragraph) => (
+            <p class="u-body" data-reveal="up">{paragraph}</p>
+          ))}
+        </div>
+        <div data-reveal="up" data-reveal-delay="620" class="intro__action">
+          <Button href={home.intro.action.href} label={home.intro.action.label} variant="solid" />
+        </div>
+      </div>
+
+      <div class="intro__figure">
+        <Media
+          name={home.intro.figure.media}
+          alt="GA Logistics LLC fleet"
+          ratio="3 / 4"
+          parallax
+          parallaxSpeed="0.1"
+        >
+          <Fragment slot="caption">{home.intro.figure.caption}</Fragment>
+        </Media>
+        <div class="intro__badge" data-reveal="scale" data-reveal-delay="420">
+          <span class="intro__badge-num u-num"><span data-count="10">10</span></span>
+          <span class="intro__badge-label">years<br />on the road</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — Services (pinned horizontal track) ----------------------------- -->
+  <ServiceTrack />
+
+  <!-- 03 — Numbers -------------------------------------------------------- -->
+  <StatBand
+    index={home.statsSection.index}
+    eyebrow={home.statsSection.eyebrow}
+    heading={home.statsSection.heading}
+  />
+
+  <!-- 04 — Coverage ------------------------------------------------------- -->
+  <section class="coverage theme-ink section" data-parallax-scope>
+    <div class="coverage__mark" aria-hidden="true" data-parallax data-parallax-speed="0.16">48</div>
+    <div class="shell coverage__grid">
+      <div class="coverage__copy">
+        <span class="sec-head__index" data-reveal="fade">[{home.coverage.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
+          {home.coverage.eyebrow}
+        </p>
+        <h2 class="coverage__title" data-split data-reveal-delay="120">{home.coverage.heading}</h2>
+        <div class="coverage__body" data-reveal-group="90" data-reveal-delay="300">
+          {home.coverage.body.map((paragraph) => (
+            <p class="u-body" data-reveal="up">{paragraph}</p>
+          ))}
+        </div>
+        <div data-reveal="up" data-reveal-delay="560" class="coverage__action">
+          <Button href={home.coverage.action.href} label={home.coverage.action.label} variant="ghost" />
+        </div>
+      </div>
+
+      <dl class="coverage__lanes" data-reveal-group="90">
+        {home.coverage.lanes.map((lane) => (
+          <div class="coverage__lane" data-reveal="up">
+            <dt>{lane.k}</dt>
+            <dd>{lane.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- 05 — How we work (sticky stack) ------------------------------------- -->
+  <PillarStack
+    index={home.pillars.index}
+    eyebrow={home.pillars.eyebrow}
+    heading={home.pillars.heading}
+    items={home.pillars.items}
+  />
+
+  <!-- 06 — Team teaser ---------------------------------------------------- -->
+  <section class="teamteaser theme-bone section" data-parallax-scope>
+    <div class="shell teamteaser__grid">
+      <div class="teamteaser__media">
+        <Media name="team-teaser" alt="GA Logistics dispatchers" ratio="4 / 5" parallax parallaxSpeed="0.09" revealFrom="left" />
+      </div>
+      <div class="teamteaser__copy">
+        <span class="sec-head__index" data-reveal="fade">[{home.teamTeaser.index}]</span>
+        <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
+          {home.teamTeaser.eyebrow}
+        </p>
+        <h2 class="teamteaser__title" data-split data-reveal-delay="120">{home.teamTeaser.heading}</h2>
+        <p class="u-lead" data-reveal="blur" data-reveal-delay="380" style="margin-top:1.5rem">
+          {home.teamTeaser.body}
+        </p>
+        <div data-reveal="up" data-reveal-delay="560" style="margin-top:2rem">
+          <Button href={home.teamTeaser.action.href} label={home.teamTeaser.action.label} variant="solid" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 — Gallery teaser ------------------------------------------------- -->
+  <section class="gteaser theme-ink section" data-parallax-scope>
+    <div class="shell">
+      <SectionHead
+        index={home.galleryTeaser.index}
+        eyebrow={home.galleryTeaser.eyebrow}
+        heading={home.galleryTeaser.heading}
+      >
+        <Button href={home.galleryTeaser.action.href} label={home.galleryTeaser.action.label} variant="ghost" />
+      </SectionHead>
+
+      <ul class="gteaser__grid">
+        {gallery.items.slice(0, 5).map((item, i) => (
+          <li class={`gteaser__cell gteaser__cell--${i + 1}`}>
+            <Media
+              name={item.media}
+              alt={item.caption}
+              ratio={i === 0 ? '4 / 5' : '1 / 1'}
+              parallax={i % 2 === 0}
+              parallaxSpeed={0.07}
+              revealDelay={i * 90}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow={home.closing.eyebrow}
+    heading={home.closing.heading}
+    body={home.closing.body}
+    actions={home.closing.actions}
+  />
+</Base>
+
+<style>
+  /* --- ticker ------------------------------------------------------------ */
+  .ticker {
+    background: var(--ink-900);
+    border-block: 1px solid var(--line);
+    padding-block: clamp(1.5rem, 1rem + 1.6vw, 2.75rem);
+    display: grid;
+    gap: 0.35rem;
+    overflow: hidden;
+  }
+  .ticker :global(.marquee__item) { color: var(--fg); }
+  .ticker :global(.marquee--outline .marquee__item) { color: transparent; }
+
+  /* --- 01 intro ---------------------------------------------------------- */
+  .intro__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2rem, 1rem + 5vw, 7rem);
+    align-items: center;
+  }
+  .intro__title { margin-top: 1.1rem; max-width: 15ch; }
+  .intro__body { margin-top: clamp(1.5rem, 1rem + 1.4vw, 2.5rem); display: grid; gap: 1.15rem; }
+  .intro__action { margin-top: 2.25rem; }
+
+  .intro__figure { position: relative; }
+
+  .intro__badge {
+    position: absolute;
+    left: clamp(-2.5rem, -3vw, -1rem);
+    bottom: 12%;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.4rem;
+    background: var(--ink-900);
+    color: #f2f3f4;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+  .intro__badge-num { font-size: 2.5rem; font-weight: 800; line-height: 1; color: var(--brand-500); }
+  .intro__badge-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    color: rgba(242, 243, 244, 0.7);
+  }
+
+  /* --- 04 coverage ------------------------------------------------------- */
+  .coverage { background: var(--ink-900); overflow: hidden; }
+
+  .coverage__mark {
+    position: absolute;
+    right: -0.08em;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(12rem, 8rem + 26vw, 34rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  .coverage__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 1rem + 4vw, 6rem);
+    align-items: center;
+  }
+  .coverage__title { margin-top: 1.1rem; max-width: 12ch; }
+  .coverage__body { margin-top: 1.75rem; display: grid; gap: 1.15rem; }
+  .coverage__action { margin-top: 2.25rem; }
+
+  .coverage__lanes { display: grid; gap: 0; }
+  .coverage__lane {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.35rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .coverage__lane:last-child { border-bottom: 1px solid var(--line); }
+  .coverage__lane dt { font-size: var(--fs-body-sm); color: var(--fg-muted); }
+  .coverage__lane dd {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-h4);
+    letter-spacing: -0.03em;
+    text-align: right;
+  }
+
+  /* --- 06 team teaser ---------------------------------------------------- */
+  .teamteaser__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 1rem + 5vw, 6.5rem);
+    align-items: center;
+  }
+  .teamteaser__title { margin-top: 1.1rem; max-width: 14ch; }
+
+  /* --- 07 gallery teaser -------------------------------------------------- */
+  .gteaser__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.5rem);
+  }
+  .gteaser__cell--1 { grid-column: span 2; grid-row: span 2; }
+  .gteaser__cell--4 { grid-column: span 2; }
+
+  @media (max-width: 1000px) {
+    .intro__grid,
+    .coverage__grid,
+    .teamteaser__grid { grid-template-columns: 1fr; }
+    .teamteaser__media { order: 2; }
+    .coverage__mark { opacity: 0.5; }
+    .gteaser__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .gteaser__cell--1 { grid-column: span 2; grid-row: auto; }
+    .gteaser__cell--4 { grid-column: span 2; }
+  }
+  @media (max-width: 560px) {
+    .intro__badge { left: 0.75rem; bottom: 0.75rem; padding: 0.85rem 1rem; }
+    .intro__badge-num { font-size: 1.75rem; }
+  }
+</style>

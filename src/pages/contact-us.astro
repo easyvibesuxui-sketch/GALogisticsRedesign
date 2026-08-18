@@ -1,0 +1,351 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Media from '../components/Media.astro';
+
+import { contactPage } from '../data/pages.js';
+import { contact, social, formEndpoint } from '../data/site.js';
+---
+
+<Base title={contactPage.title} description={contactPage.description}>
+  <PageHero
+    eyebrow={contactPage.hero.eyebrow}
+    heading={contactPage.hero.heading}
+    lead={contactPage.hero.lead}
+    crumbs={[{ label: 'Contact Us' }]}
+  />
+
+  <section class="ct theme-ink section">
+    <div class="shell ct__grid">
+      <!-- Details ---------------------------------------------------------- -->
+      <div class="ct__details">
+        <div class="ct__block" data-reveal="up">
+          <p class="ct__label">Call</p>
+          <a class="ct__big" href={contact.phone.href}>{contact.phone.label}</a>
+        </div>
+
+        <div class="ct__block" data-reveal="up" data-reveal-delay="90">
+          <p class="ct__label">Email</p>
+          <ul class="ct__mails">
+            {contact.emails.map((email) => (
+              <li>
+                <span>{email.role}</span>
+                <a href={email.href}>{email.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="ct__block" data-reveal="up" data-reveal-delay="180">
+          <p class="ct__label">Office</p>
+          <address class="ct__address">
+            {contact.address.street}<br />
+            {contact.address.city}, {contact.address.state} {contact.address.zip}<br />
+            {contact.address.country}
+          </address>
+        </div>
+
+        <div class="ct__block" data-reveal="up" data-reveal-delay="270">
+          <p class="ct__label">Yards</p>
+          <ul class="ct__yards">
+            {contact.yards.map((yard) => (
+              <li><strong>{yard.city}</strong><span>{yard.state}</span></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="ct__block" data-reveal="up" data-reveal-delay="360">
+          <p class="ct__label">Follow</p>
+          <ul class="ct__social">
+            {social.map((item) => (
+              <li><a href={item.href} target="_blank" rel="noopener" class="link-line">{item.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Form ------------------------------------------------------------- -->
+      <div class="ct__formwrap" data-reveal="blur" data-reveal-delay="120">
+        <h2 class="ct__formtitle" data-split>{contactPage.form.heading}</h2>
+
+        <form
+          class="form"
+          data-contact-form
+          action={formEndpoint || undefined}
+          method="post"
+          novalidate
+        >
+          <div class="form__row">
+            {contactPage.form.fields.slice(0, 2).map((field) => (
+              <p class="field">
+                <input
+                  class="field__input"
+                  id={field.name}
+                  name={field.name}
+                  type={field.type}
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                  placeholder=" "
+                />
+                <label class="field__label" for={field.name}>
+                  {field.label}{field.required && <em aria-hidden="true">*</em>}
+                </label>
+                <span class="field__bar" aria-hidden="true"></span>
+              </p>
+            ))}
+          </div>
+
+          <div class="form__row">
+            {contactPage.form.fields.slice(2).map((field) => (
+              <p class="field">
+                <input
+                  class="field__input"
+                  id={field.name}
+                  name={field.name}
+                  type={field.type}
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                  placeholder=" "
+                />
+                <label class="field__label" for={field.name}>
+                  {field.label}{field.required && <em aria-hidden="true">*</em>}
+                </label>
+                <span class="field__bar" aria-hidden="true"></span>
+              </p>
+            ))}
+          </div>
+
+          <p class="field field--area">
+            <textarea
+              class="field__input"
+              id={contactPage.form.message.name}
+              name={contactPage.form.message.name}
+              rows="5"
+              required
+              placeholder=" "
+            ></textarea>
+            <label class="field__label" for={contactPage.form.message.name}>
+              {contactPage.form.message.label}<em aria-hidden="true">*</em>
+            </label>
+            <span class="field__bar" aria-hidden="true"></span>
+          </p>
+
+          <div class="form__foot">
+            <button class="btn btn--primary" type="submit" data-magnetic="0.22">
+              <span class="btn__label">{contactPage.form.submit}</span>
+              <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <p class="form__note">{contactPage.form.note}</p>
+          </div>
+
+          <p class="form__status" data-form-status role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map / location band --------------------------------------------------- -->
+  <section class="ctmap theme-ink" data-parallax-scope>
+    <div class="ctmap__media">
+      <Media name="contact-map" alt="GA Logistics LLC office location" ratio="21 / 9" parallax parallaxSpeed="0.07" />
+    </div>
+    <div class="shell ctmap__pin">
+      <div class="ctmap__card" data-reveal="scale">
+        <p class="ct__label">Head office</p>
+        <p class="ctmap__addr">{contact.address.full}</p>
+        <a
+          class="link-line"
+          href={`https://maps.google.com/?q=${encodeURIComponent(contact.address.full)}`}
+          target="_blank"
+          rel="noopener"
+        >Open in Maps</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ct__grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: start;
+  }
+
+  .ct__details { display: grid; gap: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem); }
+  .ct__block { display: grid; gap: 0.75rem; padding-top: 1.15rem; border-top: 1px solid var(--line); }
+
+  .ct__label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+
+  .ct__big {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ct__big:hover { color: var(--brand-400); }
+
+  .ct__mails { display: grid; gap: 0.85rem; }
+  .ct__mails li { display: grid; gap: 0.15rem; }
+  .ct__mails span { font-size: 0.75rem; color: var(--fg-faint); }
+  .ct__mails a { font-size: var(--fs-body-sm); }
+  .ct__mails a:hover { color: var(--brand-400); }
+
+  .ct__address { font-style: normal; color: var(--fg-muted); line-height: 1.75; font-size: var(--fs-body-sm); }
+
+  .ct__yards { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .ct__yards li { display: flex; align-items: baseline; gap: 0.4rem; }
+  .ct__yards strong { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+  .ct__yards span { font-size: 0.75rem; color: var(--fg-faint); }
+
+  .ct__social { display: grid; gap: 0.5rem; justify-items: start; }
+
+  /* --- form -------------------------------------------------------------- */
+  .ct__formwrap {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 1rem + 2.4vw, 3.5rem);
+  }
+  .ct__formtitle { font-size: var(--fs-h3); margin-bottom: clamp(1.75rem, 1.2rem + 2vw, 3rem); }
+
+  .form { display: grid; gap: clamp(1.25rem, 1rem + 1vw, 2rem); }
+  .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 0.8rem + 1vw, 2rem); }
+
+  .field { position: relative; margin: 0; }
+
+  .field__input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    padding: 1.5rem 0 0.75rem;
+    font-size: var(--fs-body);
+    color: var(--fg);
+    outline: none;
+    border-radius: 0;
+  }
+  .field__input:focus-visible { outline: none; }
+  textarea.field__input { resize: vertical; min-height: 8rem; }
+
+  .field__label {
+    position: absolute;
+    left: 0;
+    top: 1.4rem;
+    font-size: var(--fs-body);
+    color: var(--fg-faint);
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform 320ms var(--ease-mask), color 320ms var(--ease-out);
+  }
+  .field__label em { color: var(--brand-500); font-style: normal; margin-left: 0.2em; }
+
+  .field__input:focus + .field__label,
+  .field__input:not(:placeholder-shown) + .field__label {
+    transform: translateY(-1.35rem) scale(0.74);
+    color: var(--fg-muted);
+  }
+
+  .field__bar {
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--brand-500);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 480ms var(--ease-mask);
+  }
+  .field__input:focus ~ .field__bar { transform: scaleX(1); }
+  .field__input:user-invalid ~ .field__bar { background: #ff5252; transform: scaleX(1); }
+
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .form__note { font-size: 0.75rem; color: var(--fg-faint); max-width: 34ch; }
+
+  .form__status {
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    min-height: 1.4em;
+  }
+  .form__status.is-error { color: #ff8a80; }
+  .form__status.is-ok { color: #7ee2a8; }
+
+  /* --- map band ----------------------------------------------------------- */
+  .ctmap { position: relative; overflow: hidden; }
+  .ctmap__media :global(.media__frame) { border-radius: 0; border: 0; }
+  .ctmap__pin { position: absolute; inset: 0; display: grid; align-items: center; }
+  .ctmap__card {
+    justify-self: start;
+    max-width: 22rem;
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    background: color-mix(in srgb, var(--ink-900) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  .ctmap__addr { font-size: var(--fs-body-sm); color: var(--fg-muted); line-height: 1.6; }
+
+  @media (max-width: 1000px) {
+    .ct__grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .form__row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  import { formEndpoint } from '../data/site.js';
+
+  const form = document.querySelector('[data-contact-form]');
+  const status = document.querySelector('[data-form-status]');
+
+  form?.addEventListener('submit', async (event) => {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      form.reportValidity();
+      status.textContent = 'Please fill in the required fields.';
+      status.className = 'form__status is-error';
+      return;
+    }
+
+    // No endpoint configured yet: hand the message to the visitor's mail client
+    // instead of silently dropping it.
+    if (!formEndpoint) {
+      event.preventDefault();
+      const data = new FormData(form);
+      const subject = data.get('subject') || `Website enquiry — ${data.get('name')}`;
+      const body = [
+        `Name: ${data.get('name')}`,
+        `Email: ${data.get('email')}`,
+        `Phone: ${data.get('phone') || '—'}`,
+        '',
+        data.get('message'),
+      ].join('\n');
+
+      window.location.href =
+        `mailto:Info@galogisticsllc.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      status.textContent = 'Opening your email app…';
+      status.className = 'form__status is-ok';
+    }
+  });
+</script>

@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Motion system
+   --------------------------------------------------------------------------
+   Two layers work together:
+
+   1. Enter reveals  — declarative CSS transitions, flipped to .is-in by a
+      one-shot ScrollTrigger per element. Interruption-safe, and degrades to
+      "always visible" without JS.
+   2. Scrubbed effects — parallax, pinned panels, counters, progress and
+      velocity-linked marquees, driven by GSAP ScrollTrigger + Lenis.
+
+   Everything is gated behind `html.js` so the site is fully readable with
+   JavaScript disabled, and behind prefers-reduced-motion.
+   ========================================================================== */
+
+.js [data-reveal] {
+  --reveal-delay: 0ms;
+  --reveal-dur: var(--dur-slow);
+  transition-delay: var(--reveal-delay);
+  will-change: transform, opacity;
+}
+
+/* -- fade + rise (default) ------------------------------------------------ */
+.js [data-reveal='fade'],
+.js [data-reveal='up'] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-shift, 28px), 0);
+  transition:
+    opacity var(--reveal-dur) var(--ease-out) var(--reveal-delay),
+    transform var(--reveal-dur) var(--ease-out) var(--reveal-delay);
+}
+.js [data-reveal='fade'] { --reveal-shift: 0px; }
+
+/* -- blur-in: softer, used for lead paragraphs and imagery ---------------- */
+.js [data-reveal='blur'] {
+  opacity: 0;
+  filter: blur(14px);
+  transform: translate3d(0, 20px, 0) scale(1.015);
+  transition:
+    opacity var(--reveal-dur) var(--ease-out) var(--reveal-delay),
+    filter var(--reveal-dur) var(--ease-out) var(--reveal-delay),
+    transform var(--reveal-dur) var(--ease-out) var(--reveal-delay);
+}
+
+/* -- clip mask: the signature reveal for media and cards ------------------ */
+.js [data-reveal='mask'] {
+  clip-path: inset(var(--mask-from, 0 0 100% 0));
+  transform: translate3d(0, 12px, 0);
+  transition:
+    clip-path var(--reveal-dur) var(--ease-mask) var(--reveal-delay),
+    transform var(--reveal-dur) var(--ease-mask) var(--reveal-delay);
+}
+.js [data-reveal='mask'][data-reveal-from='left'] { --mask-from: 0 100% 0 0; }
+.js [data-reveal='mask'][data-reveal-from='right'] { --mask-from: 0 0 0 100%; }
+
+/* -- hairline rules that draw themselves ---------------------------------- */
+.js [data-reveal='rule'] {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.1s var(--ease-mask) var(--reveal-delay);
+}
+
+/* -- scale-in for stat plates and badges ---------------------------------- */
+.js [data-reveal='scale'] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0) scale(0.965);
+  transition:
+    opacity var(--reveal-dur) var(--ease-out) var(--reveal-delay),
+    transform var(--reveal-dur) var(--ease-out) var(--reveal-delay);
+}
+
+/* -- resolved state -------------------------------------------------------- */
+.js [data-reveal].is-in {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+.js [data-reveal='rule'].is-in { transform: scaleX(1); }
+.js [data-reveal].is-in { will-change: auto; }
+
+/* ==========================================================================
+   Split-text line reveal
+   Lines are wrapped by JS into .split-line > .split-line__inner so the inner
+   span can slide out from behind a hard mask edge.
+   ========================================================================== */
+
+.split-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;   /* keeps descenders off the mask edge */
+  margin-bottom: -0.06em;
+}
+
+.split-line__inner {
+  display: block;
+  transform: translate3d(0, 108%, 0);
+  transition:
+    transform 1s var(--ease-mask),
+    opacity 1s var(--ease-mask);
+  opacity: 0;
+  transition-delay: var(--line-delay, 0ms);
+}
+
+[data-split].is-in .split-line__inner {
+  transform: none;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Parallax + scrubbed helpers (values written by GSAP)
+   ========================================================================== */
+
+[data-parallax] { will-change: transform; }
+
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--ink-700);
+}
+
+/* The inner layer is oversized so it can drift without exposing an edge. */
+.media-frame__inner {
+  position: absolute;
+  inset: -12% 0;
+  width: 100%;
+  height: 124%;
+}
+
+.media-frame__inner img,
+.media-frame__inner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   Reduced motion — keep meaning, drop movement
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .split-line__inner {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition-duration: 1ms !important;
+  }
+  * , *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

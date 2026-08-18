@@ -1,0 +1,17 @@
+---
+const { index, eyebrow, heading, aside, align = 'end', id } = Astro.props;
+---
+
+<header class="sec-head" style={`align-items:${align};`} id={id}>
+  <div class="sec-head__title">
+    {index && <span class="sec-head__index" data-reveal="fade">[{index}]</span>}
+    {eyebrow && <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">{eyebrow}</p>}
+    {heading && <h2 data-split data-reveal-delay="120">{heading}</h2>}
+  </div>
+  {(aside || Astro.slots.has('default')) && (
+    <div class="sec-head__aside" data-reveal="blur" data-reveal-delay="260">
+      {aside && <p class="u-body">{aside}</p>}
+      <slot />
+    </div>
+  )}
+</header>

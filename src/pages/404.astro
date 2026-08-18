@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import { services } from '../data/services.js';
+---
+
+<Base title="Page not found | GA Logistics LLC" description="The page you were looking for could not be found.">
+  <section class="nf theme-ink">
+    <div class="shell nf__inner">
+      <p class="u-eyebrow" data-reveal="up">Error 404</p>
+      <h1 class="nf__code u-mega" data-reveal="mask">404</h1>
+      <p class="nf__text u-lead" data-reveal="blur" data-reveal-delay="220">
+        That load never made it to this address. Let’s get you back on route.
+      </p>
+      <div class="nf__actions" data-reveal="up" data-reveal-delay="360">
+        <Button href="/" label="Back home" variant="solid" />
+        <Button href="/our-services/" label="Our Services" variant="ghost" />
+      </div>
+
+      <ul class="nf__links" data-reveal-group="60" data-reveal-delay="440">
+        {services.slice(0, 4).map((service) => (
+          <li data-reveal="up">
+            <a class="link-line" href={`/services/${service.slug}/`}>{service.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 88svh;
+    display: grid;
+    align-items: center;
+    padding-top: calc(var(--header-h) + 4rem);
+    padding-bottom: 5rem;
+    background: var(--ink-900);
+  }
+  .nf__inner { display: grid; gap: 1.25rem; justify-items: start; }
+  .nf__code { color: transparent; -webkit-text-stroke: 1px var(--line-strong); line-height: 0.8; }
+  .nf__text { max-width: 34ch; }
+  .nf__actions { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 1rem; }
+  .nf__links { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 2.5rem; }
+</style>

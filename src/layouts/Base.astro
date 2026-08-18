@@ -1,0 +1,95 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/motion.css';
+import '../styles/components.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+import { site, contact, social } from '../data/site.js';
+
+const {
+  title,
+  description = site.description,
+  ogImage = '/media/og.jpg',
+  bodyClass = '',
+} = Astro.props;
+
+const fullTitle = title ? `${title}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'MovingCompany',
+  name: site.name,
+  url: site.url,
+  telephone: contact.phone.label,
+  email: contact.emails[0].label,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: contact.address.street,
+    addressLocality: contact.address.city,
+    addressRegion: contact.address.state,
+    postalCode: contact.address.zip,
+    addressCountry: 'US',
+  },
+  sameAs: social.map((item) => item.href),
+  areaServed: 'United States',
+};
+---
+
+<!doctype html>
+<html lang="en" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, site.url).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#08090b" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500;600&display=swap"
+    />
+
+    <script is:inline>
+      /* Set before first paint so motion styles never flash unstyled content. */
+      document.documentElement.classList.add('js');
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(organization)} />
+  </head>
+
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="progress" aria-hidden="true"><div class="progress__bar" data-progress-bar></div></div>
+    <div class="cursor" data-cursor aria-hidden="true"></div>
+
+    <Header />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import '../scripts/motion.js';
+    </script>
+  </body>
+</html>

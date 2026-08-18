@@ -1,0 +1,176 @@
+/* ==========================================================================
+   Reset + document primitives
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis owns smooth scrolling; see scripts/motion.js */
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--ink-900);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Lenis drives the scroll position on <html>; these are its required hooks. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+img, video { height: auto; }
+
+input, button, textarea, select { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+
+a { color: inherit; text-decoration: none; }
+
+ul, ol { list-style: none; padding: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--brand-500); color: #fff; }
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--tr-tight);
+  line-height: var(--lh-snug);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-h1); line-height: var(--lh-tight); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-tight); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+
+p { text-wrap: pretty; }
+
+.u-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tr-wide);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.u-eyebrow::before {
+  content: '';
+  width: 1.75em;
+  height: 1px;
+  background: var(--accent);
+  flex: none;
+}
+
+.u-eyebrow--plain::before { display: none; }
+
+.u-lead {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+  color: var(--fg-muted);
+  max-width: 46ch;
+  letter-spacing: -0.015em;
+}
+
+.u-body { color: var(--fg-muted); max-width: var(--measure); }
+.u-body + .u-body { margin-top: 1em; }
+
+.u-accent { color: var(--accent); }
+.u-muted { color: var(--fg-muted); }
+
+.u-mega {
+  font-family: var(--font-display);
+  font-size: var(--fs-mega);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+}
+
+.u-num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.shell--narrow { max-width: 1180px; }
+
+.section {
+  position: relative;
+  background: var(--bg);
+  color: var(--fg);
+  padding-block: var(--section-y);
+  isolation: isolate;
+}
+
+.section--flush { padding-block: 0; }
+.section--tight { padding-block: clamp(3rem, 1.8rem + 5vw, 6.5rem); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(1rem, 0.5rem + 1.6vw, 2.5rem);
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  width: 100%;
+}
+
+.stack > * + * { margin-top: var(--stack-gap, 1.25rem); }
+
+.u-hide { display: none !important; }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 999;
+  padding: 0.75rem 1.25rem;
+  background: var(--brand-500);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible { transform: none; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}

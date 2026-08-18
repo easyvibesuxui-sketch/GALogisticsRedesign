@@ -1,0 +1,177 @@
+---
+/**
+ * Media slot.
+ *
+ * Client media arrives later, so every image on the site is addressed by a
+ * stable `name`. Drop `public/media/<name>.<ext>` in and the slot switches
+ * from a designed placeholder to the real asset at build time — no markup
+ * changes anywhere.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+
+const {
+  name,
+  alt = '',
+  ratio = '4 / 3',
+  parallax = false,
+  parallaxSpeed = 0.12,
+  loading = 'lazy',
+  sizes = '100vw',
+  class: className = '',
+  reveal = 'mask',
+  revealFrom,
+  revealDelay,
+  cover = true,
+} = Astro.props;
+
+const EXTENSIONS = ['.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg'];
+const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
+
+let src = null;
+for (const ext of EXTENSIONS) {
+  const candidate = path.join(MEDIA_DIR, `${name}${ext}`);
+  if (fs.existsSync(candidate)) {
+    src = `/media/${name}${ext}`;
+    break;
+  }
+}
+
+const isVideo = src === null && fs.existsSync(path.join(MEDIA_DIR, `${name}.mp4`));
+const videoSrc = isVideo ? `/media/${name}.mp4` : null;
+---
+
+<figure
+  class:list={['media', className, { 'is-empty': !src && !videoSrc }]}
+  style={`--media-ratio: ${ratio};`}
+  data-reveal={reveal || undefined}
+  data-reveal-from={revealFrom}
+  data-reveal-delay={revealDelay}
+>
+  <div class="media__frame">
+    <div
+      class="media__layer"
+      data-parallax={parallax ? '' : undefined}
+      data-parallax-speed={parallax ? parallaxSpeed : undefined}
+    >
+      {videoSrc && (
+        <video src={videoSrc} autoplay muted loop playsinline aria-label={alt}></video>
+      )}
+      {src && !videoSrc && (
+        <img src={src} alt={alt} loading={loading} decoding="async" sizes={sizes} />
+      )}
+      {!src && !videoSrc && (
+        <div class="media__placeholder" role="img" aria-label={alt || `Image slot: ${name}`}>
+          <svg class="media__grid" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id={`grid-${name}`} width="44" height="44" patternUnits="userSpaceOnUse">
+                <path d="M44 0H0V44" fill="none" stroke="currentColor" stroke-width="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill={`url(#grid-${name})`} />
+          </svg>
+          <span class="media__slot">
+            <span class="media__slot-dot" aria-hidden="true"></span>
+            {name}
+          </span>
+        </div>
+      )}
+    </div>
+  </div>
+  {Astro.slots.has('caption') && (
+    <figcaption class="media__caption"><slot name="caption" /></figcaption>
+  )}
+</figure>
+
+<style>
+  .media {
+    position: relative;
+    margin: 0;
+    width: 100%;
+  }
+
+  .media__frame {
+    position: relative;
+    aspect-ratio: var(--media-ratio);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--fg) 6%, transparent);
+    border: 1px solid var(--line);
+  }
+
+  /* Oversized so parallax drift never exposes an edge. */
+  .media__layer {
+    position: absolute;
+    inset: -10% 0;
+    height: 120%;
+    width: 100%;
+  }
+
+  .media__layer img,
+  .media__layer video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .media__placeholder {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--fg) 7%, transparent), transparent 70%),
+      color-mix(in srgb, var(--fg) 4%, transparent);
+    color: var(--fg-faint);
+  }
+
+  .media__grid {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: color-mix(in srgb, var(--fg) 8%, transparent);
+  }
+
+  .media__slot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.65em 1.1em;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+
+  .media__slot-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .media__caption {
+    margin-top: 1rem;
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .media__caption::before {
+    content: '';
+    width: 1.6em;
+    height: 1px;
+    background: var(--line-strong);
+    flex: none;
+  }
+</style>

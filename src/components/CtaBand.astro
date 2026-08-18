@@ -1,0 +1,74 @@
+---
+import Button from './Button.astro';
+import { contact } from '../data/site.js';
+
+const { eyebrow, heading, body, actions = [] } = Astro.props;
+---
+
+<section class="cta theme-ink section" data-parallax-scope>
+  <div class="cta__glow" aria-hidden="true" data-parallax data-parallax-speed="0.2"></div>
+  <div class="shell cta__inner">
+    <p class="u-eyebrow" data-reveal="up">{eyebrow}</p>
+    <h2 class="cta__title" data-split data-reveal-delay="90">{heading}</h2>
+    {body && <p class="cta__body" data-reveal="blur" data-reveal-delay="380">{body}</p>}
+
+    <div class="cta__actions" data-reveal-group="90" data-reveal-delay="480">
+      {actions.map((action) => (
+        <div data-reveal="up">
+          <Button href={action.href} label={action.label} variant={action.variant || 'solid'} />
+        </div>
+      ))}
+    </div>
+
+    <div class="cta__direct" data-reveal="fade" data-reveal-delay="700">
+      <a href={contact.phone.href} class="link-line">{contact.phone.label}</a>
+      <span aria-hidden="true">·</span>
+      <a href={contact.emails[1].href} class="link-line">{contact.emails[1].label}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    background: var(--ink-850);
+    text-align: center;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+  }
+
+  .cta__glow {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: min(1100px, 120vw);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--brand-500) 26%, transparent), transparent 62%);
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .cta__inner { position: relative; z-index: 1; display: grid; justify-items: center; gap: 1.25rem; }
+
+  .cta__title {
+    font-size: var(--fs-h2);
+    max-width: 18ch;
+    letter-spacing: -0.045em;
+  }
+  .cta__body { color: var(--fg-muted); max-width: 46ch; }
+
+  .cta__actions { display: flex; flex-wrap: wrap; gap: 0.85rem; justify-content: center; margin-top: 0.75rem; }
+
+  .cta__direct {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-muted);
+    font-size: var(--fs-body-sm);
+  }
+</style>

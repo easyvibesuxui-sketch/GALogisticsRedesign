@@ -1,0 +1,27 @@
+---
+const {
+  href,
+  label,
+  variant = 'primary',
+  arrow = true,
+  magnetic = true,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  class:list={['btn', `btn--${variant}`, className]}
+  data-magnetic={magnetic ? '0.28' : undefined}
+  {...rest}
+>
+  <span class="btn__label">{label}<slot /></span>
+  {arrow && (
+    <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  )}
+</Tag>

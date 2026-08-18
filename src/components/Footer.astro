@@ -1,0 +1,232 @@
+---
+import { nav, contact, social, footerNote, site } from '../data/site.js';
+import { services } from '../data/services.js';
+
+const primary = nav.filter((item) => !item.children);
+---
+
+<footer class="ftr theme-ink" id="site-footer">
+  <div class="ftr__cap" aria-hidden="true"></div>
+
+  <div class="shell ftr__inner">
+    <div class="ftr__grid">
+      <div class="ftr__brandcol">
+        <p class="u-eyebrow" data-reveal="fade">{contact.hours}</p>
+        <a class="ftr__phone" href={contact.phone.href} data-reveal="up" data-reveal-delay="80">
+          {contact.phone.label}
+        </a>
+        <address class="ftr__address" data-reveal="up" data-reveal-delay="140">
+          {contact.address.street}<br />
+          {contact.address.city}, {contact.address.state} {contact.address.zip}<br />
+          {contact.address.country}
+        </address>
+        <ul class="ftr__mails" data-reveal-group="70">
+          {contact.emails.map((email) => (
+            <li data-reveal="up">
+              <span class="ftr__mail-role">{email.role}</span>
+              <a href={email.href}>{email.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <nav class="ftr__col" aria-label="Footer">
+        <h2 class="ftr__title">Site</h2>
+        <ul data-reveal-group="45">
+          {primary.map((item) => (
+            <li data-reveal="up"><a class="ftr__link" href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="ftr__col ftr__col--wide" aria-label="Services">
+        <h2 class="ftr__title">Services</h2>
+        <ul class="ftr__services" data-reveal-group="40">
+          {services.map((service) => (
+            <li data-reveal="up"><a class="ftr__link" href={`/services/${service.slug}/`}>{service.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="ftr__col">
+        <h2 class="ftr__title">Follow</h2>
+        <ul data-reveal-group="60">
+          {social.map((item) => (
+            <li data-reveal="up">
+              <a class="ftr__link ftr__link--ext" href={item.href} rel="noopener" target="_blank">
+                {item.label}
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <ul class="ftr__yards">
+          {contact.yards.map((yard) => (
+            <li>{yard.city}, {yard.state}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="ftr__wordmark" aria-hidden="true" data-reveal="mask">
+      <span>GA Logistics</span>
+    </div>
+
+    <div class="ftr__bar">
+      <p>{footerNote}</p>
+      <p class="ftr__legal">{site.name} · USDOT registered motor carrier</p>
+      <a class="ftr__top" href="#top">
+        Back to top
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 13V3M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    position: relative;
+    background: var(--ink-900);
+    color: var(--fg);
+    padding-block: clamp(4rem, 2.5rem + 6vw, 8rem) 2rem;
+    overflow: hidden;
+  }
+
+  .ftr__cap {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-strong) 22%, var(--line-strong) 78%, transparent);
+  }
+
+  .ftr__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 1.4fr 0.8fr;
+    gap: clamp(2rem, 1rem + 3vw, 4rem);
+  }
+
+  .ftr__phone {
+    display: block;
+    margin-top: 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ftr__phone:hover { color: var(--brand-400); }
+
+  .ftr__address {
+    margin-top: 1.25rem;
+    font-style: normal;
+    color: var(--fg-muted);
+    font-size: var(--fs-body-sm);
+    line-height: 1.75;
+  }
+
+  .ftr__mails { margin-top: 1.75rem; display: grid; gap: 0.9rem; }
+  .ftr__mail-role {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin-bottom: 0.2rem;
+  }
+  .ftr__mails a { font-size: var(--fs-body-sm); color: var(--fg); }
+  .ftr__mails a:hover { color: var(--brand-400); }
+
+  .ftr__title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin-bottom: 1.5rem;
+  }
+
+  .ftr__col ul { display: grid; gap: 0.7rem; }
+  .ftr__services { grid-template-columns: 1fr 1fr; gap: 0.7rem 1.5rem; }
+
+  .ftr__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    transition: color 260ms var(--ease-out), padding-left 320ms var(--ease-out);
+  }
+  .ftr__link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--brand-500);
+    transition: width 320ms var(--ease-out);
+  }
+  .ftr__link:hover { color: var(--fg); padding-left: 1.15em; }
+  .ftr__link:hover::before { width: 0.85em; }
+  .ftr__link--ext svg { width: 11px; height: 11px; }
+
+  .ftr__yards {
+    margin-top: 1.75rem;
+    font-size: var(--fs-body-sm);
+    color: var(--fg-faint);
+    gap: 0.35rem;
+  }
+
+  /* Oversized wordmark: the site signing its own name. */
+  .ftr__wordmark {
+    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(3rem, -0.5rem + 15.5vw, 15rem);
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.16);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .ftr__bar {
+    margin-top: clamp(2rem, 1.4rem + 2vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--fg-faint);
+  }
+
+  .ftr__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--fg-muted);
+  }
+  .ftr__top svg { width: 13px; height: 13px; transition: transform 340ms var(--ease-out); }
+  .ftr__top:hover { color: var(--fg); }
+  .ftr__top:hover svg { transform: translateY(-3px); }
+
+  @media (max-width: 1100px) {
+    .ftr__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 620px) {
+    .ftr__grid { grid-template-columns: 1fr; }
+    .ftr__services { grid-template-columns: 1fr; }
+    .ftr__legal { display: none; }
+  }
+</style>

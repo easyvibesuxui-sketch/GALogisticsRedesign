@@ -1,0 +1,150 @@
+# GA Logistics LLC — Website Redesign
+
+A rebuild of [galogisticsllc.com](https://galogisticsllc.com) that keeps the
+**content and URL architecture unchanged** and replaces the UI, the section
+composition and the motion layer with a premium, scroll-driven system.
+
+---
+
+## Stack
+
+| Piece | Choice | Why |
+|---|---|---|
+| Framework | **Astro 7** (static output) | Multi-page site, zero client framework, ships almost no JS |
+| Smooth scroll | **Lenis** | Inertial scrolling that the scroll effects can hook into |
+| Scrubbed motion | **GSAP + ScrollTrigger** | Pinning, parallax, counters, velocity-linked marquees |
+| Enter reveals | Native `IntersectionObserver` + CSS transitions | Cheap, interruption-safe, degrades to visible without JS |
+| Styling | Plain CSS with design tokens | No build-time CSS framework, everything re-skinnable from one file |
+
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # → dist/  (static, deploy anywhere)
+npm run preview
+```
+
+---
+
+## Architecture
+
+URLs mirror the live site one-to-one, trailing slashes included.
+
+```
+/                                          Home
+/about-us/                                 About Us
+/our-services/                             Our Services (index)
+/services/transportation/                  ┐
+/services/dispatching/                     │
+/services/port-to-destination-logistics/   │
+/services/trailer-rental/                  ├ generated from src/data/services.js
+/services/parking/                         │
+/services/car-carrier-dispatch/            │
+/services/shop/                            │
+/services/truck-dispatching-courses/       ┘
+/our-team/                                 Our Team
+/gallery/                                  Gallery
+/contact-us/                               Contact Us
+/404                                       Not found
+/sitemap.xml, /robots.txt
+```
+
+```
+src/
+├── data/            ← ALL COPY LIVES HERE. Markup never hard-codes text.
+│   ├── site.js          navigation, contact details, socials, stats
+│   ├── services.js      the eight service pages
+│   └── pages.js         home / about / team / gallery / contact copy
+├── styles/
+│   ├── tokens.css       colour, type scale, spacing, motion easings
+│   ├── base.css         reset, typography, layout primitives
+│   ├── motion.css       reveal primitives + reduced-motion handling
+│   └── components.css   buttons, cards, marquee, stats, cursor, progress
+├── scripts/motion.js    the scroll engine (see below)
+├── components/          Header, Footer, Hero, PageHero, ServiceTrack,
+│                        PillarStack, StatBand, CtaBand, Marquee, Media…
+├── layouts/Base.astro   head, fonts, JSON-LD, header/footer, motion boot
+└── pages/               one file per route
+```
+
+---
+
+## The motion system
+
+`src/scripts/motion.js` is the single owner of scroll behaviour. Two layers:
+
+1. **Enter reveals** — declarative CSS transitions flipped by an
+   `IntersectionObserver`. Interruption-safe and free.
+2. **Scrubbed effects** — GSAP ScrollTrigger, fed by Lenis.
+
+Everything is authored as data attributes in markup:
+
+| Attribute | Effect |
+|---|---|
+| `data-reveal="up\|fade\|blur\|mask\|rule\|scale"` | Enter reveal |
+| `data-reveal-delay="240"` | Delay in ms |
+| `data-reveal-group="90"` | Stagger direct children by 90 ms |
+| `data-split` | Heading split into masked lines that slide up |
+| `data-parallax` + `data-parallax-speed="0.12"` | Vertical drift |
+| `data-count="200"` | Number counts up when it enters |
+| `data-marquee` + `data-marquee-speed/-direction` | Infinite ticker, nudged by scroll velocity |
+| `data-pin-track` / `data-pin-lane` | Section pins, lane scrolls horizontally |
+| `data-stick-scale` | Stacked sticky panels that recede as the next arrives |
+| `data-magnetic="0.28"` | Element leans toward the cursor |
+| `data-hero-media` / `data-hero-veil` / `data-hero-copy` | Hero scale, veil and copy drift |
+
+**Signature moments**
+
+- Hero media scales and darkens while the copy drifts up and fades out.
+- Two counter-running tickers, one solid, one outline, both accelerating with scroll velocity.
+- The services section **pins and scrolls sideways** through all eight cards, with its own progress rail.
+- Stat numbers count up; hairline rules draw themselves left to right.
+- "How we work" panels **stack and recede** as each new one settles on top.
+- Service index rows carry a **cursor-following image preview**.
+- Headings arrive **line by line from behind a hard mask edge**.
+- Custom cursor, magnetic buttons, a page progress bar, and a header that tucks away on scroll down.
+
+**Accessibility & resilience**
+
+- Every effect is disabled under `prefers-reduced-motion: reduce`.
+- Without JavaScript nothing is hidden — reveals only arm once `html.js` is set.
+- The pinned horizontal track becomes a snap-scrolling row below 900 px.
+- Custom cursor and magnetic buttons only run on fine pointers.
+- Skip link, focus-visible rings, labelled controls, keyboard-navigable lightbox.
+
+---
+
+## Media
+
+Every image on the site is addressed by a **slot name**, not a path. Drop a file
+into `public/media/` named after the slot and it appears — no code changes.
+
+```
+public/media/hero.jpg              → the home hero
+public/media/transportation-hero.webp
+public/media/team-1.jpg
+```
+
+Supported extensions, in priority order: `.webp`, `.avif`, `.jpg`, `.jpeg`,
+`.png`, `.svg`, plus `.mp4` (rendered as an autoplaying muted loop — the hero
+looks best this way).
+
+Until a file exists the slot renders a designed placeholder printing its own
+name, so the layout is always complete and you can see exactly what to send.
+
+Run `npm run media:list` to print every slot the site is waiting for.
+
+---
+
+## Contact form
+
+`src/data/site.js → formEndpoint` is empty. While empty, the form validates and
+then opens the visitor's mail client with the message pre-filled. Set it to a
+Formspree / Netlify Forms / custom endpoint URL and it posts normally.
+
+---
+
+## Re-skinning
+
+`src/styles/tokens.css` is the whole visual system — brand colour, ink and bone
+surfaces, the fluid type scale, spacing rhythm, easings and durations. Change
+`--brand-500` and the entire site follows.

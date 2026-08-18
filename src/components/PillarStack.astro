@@ -1,0 +1,72 @@
+---
+import Media from './Media.astro';
+import SectionHead from './SectionHead.astro';
+
+const { index, eyebrow, heading, items = [] } = Astro.props;
+---
+
+<section class="pillars theme-ink section">
+  <div class="shell">
+    <SectionHead index={index} eyebrow={eyebrow} heading={heading} />
+
+    <div class="pillars__stack">
+      {items.map((item, i) => (
+        <article class="pillar" data-stick-scale style={`--i:${i}; z-index:${i + 1}`}>
+          <div class="pillar__grid">
+            <div class="pillar__copy">
+              <span class="pillar__n u-num">{item.n}</span>
+              <h3 class="pillar__title" data-split>{item.title}</h3>
+              <p class="pillar__text" data-reveal="up" data-reveal-delay="180">{item.text}</p>
+            </div>
+            <div class="pillar__media">
+              <Media name={item.media} alt={item.title} ratio="4 / 3" parallax parallaxSpeed="0.08" />
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillars { background: var(--ink-900); }
+
+  .pillars__stack { display: grid; gap: clamp(1rem, 0.5rem + 1.5vw, 2rem); }
+
+  .pillar {
+    position: sticky;
+    top: calc(var(--header-h) + 2.5rem);
+    background: var(--ink-800);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 1rem + 2.4vw, 3.5rem);
+    overflow: hidden;
+    will-change: transform, filter;
+  }
+
+  .pillar__grid {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    align-items: center;
+  }
+
+  .pillar__copy { display: grid; gap: 1rem; align-content: center; }
+
+  .pillar__n {
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    color: var(--brand-500);
+    font-family: var(--font-mono);
+  }
+
+  .pillar__title { font-size: var(--fs-h3); max-width: 14ch; }
+  .pillar__text { color: var(--fg-muted); max-width: 46ch; }
+
+  .pillar__media { border-radius: var(--radius); overflow: hidden; }
+
+  @media (max-width: 860px) {
+    .pillar { position: static; }
+    .pillar__grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,227 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Media from '../components/Media.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Marquee from '../components/Marquee.astro';
+
+import { servicesIndex } from '../data/pages.js';
+import { services, serviceGroups } from '../data/services.js';
+---
+
+<Base title={servicesIndex.title} description={servicesIndex.description}>
+  <PageHero
+    eyebrow={servicesIndex.hero.eyebrow}
+    heading={servicesIndex.hero.heading}
+    lead={servicesIndex.hero.lead}
+    media={servicesIndex.hero.media}
+    crumbs={[{ label: 'Our Services' }]}
+  />
+
+  <section class="ticker theme-ink" aria-hidden="true">
+    <Marquee items={serviceGroups} speed={0.38} direction="left" variant="outline" />
+  </section>
+
+  <!-- Index list with a cursor-following preview ------------------------- -->
+  <section class="slist theme-ink section" data-service-list>
+    <div class="shell">
+      <SectionHead
+        index="01"
+        eyebrow="The full list"
+        heading="Pick a lane."
+        aside="Every service below is run in-house — the same company answers for the truck, the trailer and the paperwork."
+      />
+
+      <ol class="slist__rows">
+        {services.map((service) => (
+          <li class="srow" data-preview={service.slug}>
+            <a class="srow__link" href={`/services/${service.slug}/`}>
+              <span class="srow__n u-num">{service.index}</span>
+              <span class="srow__title">{service.title}</span>
+              <span class="srow__summary">{service.summary}</span>
+              <span class="srow__arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path d="M3 13L13 3M13 3H5M13 3v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="slist__preview" data-preview-layer aria-hidden="true">
+      {services.map((service) => (
+        <div class="slist__preview-item" data-preview-for={service.slug}>
+          <Media name={service.media.hero} alt="" ratio="4 / 3" reveal={null} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Card grid ----------------------------------------------------------- -->
+  <section class="sgrid theme-bone section">
+    <div class="shell">
+      <SectionHead index="02" eyebrow="At a glance" heading="Eight ways we move freight." />
+      <ul class="sgrid__grid" data-reveal-group="90">
+        {services.map((service) => (
+          <li class="card" data-reveal="up">
+            <div class="card__media">
+              <Media name={service.media.hero} alt={service.title} ratio="16 / 10" reveal={null} />
+            </div>
+            <div class="card__body">
+              <p class="sgrid__eyebrow">{service.index} — {service.eyebrow}</p>
+              <h3 class="card__title">{service.title}</h3>
+              <p class="card__text">{service.summary}</p>
+              <div class="card__foot">
+                <a class="link-line card__link" href={`/services/${service.slug}/`}>
+                  View service
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" style="width:12px;height:12px">
+                    <path d="M3 13L13 3M13 3H5M13 3v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow={servicesIndex.outro.eyebrow}
+    heading={servicesIndex.outro.heading}
+    actions={[
+      { label: servicesIndex.outro.action.label, href: servicesIndex.outro.action.href, variant: 'solid' },
+    ]}
+  />
+</Base>
+
+<style>
+  .ticker {
+    background: var(--ink-850);
+    border-block: 1px solid var(--line);
+    padding-block: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    overflow: hidden;
+  }
+
+  /* --- index list -------------------------------------------------------- */
+  .slist { position: relative; background: var(--ink-900); }
+
+  .srow { border-top: 1px solid var(--line); }
+  .srow:last-child { border-bottom: 1px solid var(--line); }
+
+  .srow__link {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1.05fr) minmax(0, 1.15fr) 3rem;
+    align-items: center;
+    gap: clamp(1rem, 0.5rem + 1.6vw, 2.5rem);
+    padding: clamp(1.4rem, 1rem + 1.4vw, 2.4rem) 0;
+    transition: padding 520ms var(--ease-mask), color 320ms var(--ease-out);
+  }
+  .srow__link:hover { padding-inline: clamp(0.5rem, 1.2vw, 1.5rem); }
+
+  .srow__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--fg-faint); }
+
+  .srow__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.375rem, 0.9rem + 1.8vw, 2.5rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    transition: color 320ms var(--ease-out);
+  }
+  .srow__link:hover .srow__title { color: var(--brand-400); }
+
+  .srow__summary { color: var(--fg-muted); font-size: var(--fs-body-sm); }
+
+  .srow__arrow {
+    justify-self: end;
+    width: 2.75rem; height: 2.75rem;
+    display: grid; place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    transition: transform 420ms var(--ease-out), border-color 320ms var(--ease-out), background-color 320ms var(--ease-out);
+  }
+  .srow__arrow svg { width: 14px; height: 14px; }
+  .srow__link:hover .srow__arrow {
+    transform: rotate(45deg);
+    border-color: var(--brand-500);
+    background: var(--brand-500);
+    color: #fff;
+  }
+
+  .slist__preview {
+    position: fixed;
+    top: 0; left: 0;
+    width: clamp(220px, 22vw, 340px);
+    aspect-ratio: 4 / 3;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0;
+    margin: -8% 0 0 -50%;
+    transition: opacity 380ms var(--ease-out);
+  }
+  .slist__preview.is-on { opacity: 1; }
+
+  .slist__preview-item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 340ms var(--ease-out), transform 520ms var(--ease-mask);
+  }
+  .slist__preview-item.is-on { opacity: 1; transform: none; }
+  .slist__preview-item :global(.media),
+  .slist__preview-item :global(.media__frame) { height: 100%; aspect-ratio: auto; }
+
+  @media (max-width: 900px) {
+    .srow__link { grid-template-columns: 3rem 1fr 2.5rem; }
+    .srow__summary { display: none; }
+    .slist__preview { display: none; }
+  }
+</style>
+
+<script>
+  /* Cursor-following preview for the service index list. */
+  const scope = document.querySelector('[data-service-list]');
+  const layer = document.querySelector('[data-preview-layer]');
+
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (scope && layer && fine && !reduced) {
+    const { gsap } = await import('gsap');
+    const items = new Map(
+      [...layer.querySelectorAll('[data-preview-for]')].map((node) => [node.dataset.previewFor, node])
+    );
+
+    const toX = gsap.quickTo(layer, 'x', { duration: 0.7, ease: 'power3.out' });
+    const toY = gsap.quickTo(layer, 'y', { duration: 0.7, ease: 'power3.out' });
+
+    let active = null;
+
+    scope.addEventListener('pointermove', (event) => {
+      toX(event.clientX);
+      toY(event.clientY);
+    });
+
+    scope.querySelectorAll('[data-preview]').forEach((row) => {
+      row.addEventListener('pointerenter', () => {
+        const next = items.get(row.dataset.preview);
+        if (!next) return;
+        if (active) active.classList.remove('is-on');
+        next.classList.add('is-on');
+        active = next;
+        layer.classList.add('is-on');
+      });
+    });
+
+    scope.addEventListener('pointerleave', () => {
+      layer.classList.remove('is-on');
+      if (active) active.classList.remove('is-on');
+      active = null;
+    });
+  }
+</script>
