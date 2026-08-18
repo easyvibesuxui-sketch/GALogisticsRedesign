@@ -147,7 +147,7 @@
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--ink-700);
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
 }
 .card__media img {
   width: 100%; height: 100%;
@@ -279,4 +279,84 @@
 }
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .cursor { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Film grain
+   A single tiny SVG turbulence tile, scaled up and set very low. It keeps the
+   large flat ink fields from banding and gives the surface a printed feel.
+   -------------------------------------------------------------------------- */
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 7s steps(6) infinite;
+  will-change: transform;
+}
+
+@keyframes grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  16% { transform: translate(-2%, -3%); }
+  33% { transform: translate(-4%, 2%); }
+  50% { transform: translate(2%, -4%); }
+  66% { transform: translate(-1%, 3%); }
+  83% { transform: translate(3%, 1%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Page transition veil
+   Wipes up over the outgoing page on navigation, then peels away once the new
+   page paints. Purely presentational — navigation still works if it never runs.
+   -------------------------------------------------------------------------- */
+
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  background: var(--ink-900);
+  pointer-events: none;
+  transform: translate3d(0, 100%, 0);
+}
+
+/* Entering the new page: the veil is already covering, then lifts away. */
+.veil--enter {
+  transform: translate3d(0, 0, 0);
+  animation: veil-out 820ms var(--ease-mask) forwards;
+}
+
+/* Leaving: the veil rises to cover before the browser swaps documents. */
+.veil--leave { animation: veil-in 520ms var(--ease-mask) forwards; }
+
+@keyframes veil-in {
+  from { transform: translate3d(0, 100%, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes veil-out {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -100%, 0); }
+}
+
+.veil__mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  letter-spacing: -0.04em;
+  color: rgba(242, 243, 244, 0.22);
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .veil { display: none; }
 }

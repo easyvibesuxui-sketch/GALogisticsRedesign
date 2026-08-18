@@ -51,6 +51,9 @@ import { services } from '../data/services.js';
     color: var(--fg);
     min-height: 100svh;
     display: grid;
+    /* minmax(0,…) stops the very wide lane from inflating the grid column and
+       dragging the centred header off-screen with it. */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr;
     align-content: center;
     gap: clamp(1.5rem, 1rem + 2vw, 3rem);
@@ -85,7 +88,7 @@ import { services } from '../data/services.js';
     transform-origin: left center;
   }
 
-  .track__viewport { width: 100%; display: flex; align-items: stretch; }
+  .track__viewport { width: 100%; min-width: 0; display: flex; align-items: stretch; }
 
   .track__lane {
     display: flex;
@@ -129,8 +132,9 @@ import { services } from '../data/services.js';
     border-radius: var(--radius-pill);
   }
 
-  /* Media takes whatever height the copy leaves, so every card lines up. */
-  .tcard__media { overflow: hidden; flex: 1; min-height: 0; }
+  /* Fixed-ratio media band so every card's copy starts on the same line; the
+     body then flexes and pins its link to the bottom edge. */
+  .tcard__media { overflow: hidden; flex: none; aspect-ratio: 4 / 3; }
   .tcard__media :global(.media),
   .tcard__media :global(.media__frame) { height: 100%; aspect-ratio: auto; }
   .tcard__media :global(.media__frame) { border-radius: 0; border: 0; border-bottom: 1px solid var(--line); }
@@ -141,7 +145,8 @@ import { services } from '../data/services.js';
     padding: clamp(1.1rem, 0.9rem + 0.7vw, 1.75rem);
     display: grid;
     gap: 0.55rem;
-    flex: none;
+    flex: 1;
+    min-height: 0;
     align-content: start;
   }
 
@@ -156,7 +161,8 @@ import { services } from '../data/services.js';
   .tcard__text { font-size: var(--fs-body-sm); color: var(--fg-muted); }
 
   .tcard__cta {
-    margin-top: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5em;

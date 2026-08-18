@@ -106,6 +106,25 @@ import { services, serviceGroups } from '../data/services.js';
     overflow: hidden;
   }
 
+  /* --- card grid --------------------------------------------------------- */
+  .sgrid__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 0.6rem + 1.4vw, 2rem);
+  }
+
+  .sgrid__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  @media (max-width: 1200px) { .sgrid__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 860px) { .sgrid__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .sgrid__grid { grid-template-columns: 1fr; } }
+
   /* --- index list -------------------------------------------------------- */
   .slist { position: relative; background: var(--ink-900); }
 
