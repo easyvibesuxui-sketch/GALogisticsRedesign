@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-label="truck stop parking lot night">
+  <defs>
+    <linearGradient id="bgparkinghero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15181d"/>
+      <stop offset="0.55" stop-color="#0d1014"/>
+      <stop offset="1" stop-color="#07080a"/>
+    </linearGradient>
+    <radialGradient id="glowparkinghero" cx="0.5" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#f0552b" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#f0552b" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="gridparkinghero" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <pattern id="stripeparkinghero" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="17" height="34" fill="#ffffff" fill-opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1200" fill="url(#bgparkinghero)"/>
+  <rect width="1600" height="1200" fill="url(#gridparkinghero)"/>
+  <rect width="1600" height="1200" fill="url(#glowparkinghero)"/>
+
+  <!-- hazard band, a nod to the trade -->
+  <rect x="0" y="1068" width="1600" height="16" fill="url(#stripeparkinghero)"/>
+
+  <!-- centred so a cover-crop to 21:9 or 3:4 still shows the subject -->
+  <g transform="translate(560, 410) scale(2)">
+    <g fill="none" stroke="#f0552b" stroke-opacity="0.5"
+       stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      
+    <rect x="30" y="26" width="88" height="108" rx="10" />
+    <path d="M58 110V50h22a18 18 0 0 1 0 36H58" />
+    <path d="M140 134h74" />
+    <path d="M140 108h74" />
+    <path d="M140 82h44" />
+    </g>
+  </g>
+
+  <g transform="translate(800, 810)" text-anchor="middle"
+     font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <text y="0" fill="#ffffff" fill-opacity="0.62" font-size="30" letter-spacing="7">PARKING-HERO</text>
+    <text y="42" fill="#ffffff" fill-opacity="0.30" font-size="22" letter-spacing="2">truck stop parking lot night</text>
+  </g>
+</svg>

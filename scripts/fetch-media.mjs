@@ -31,7 +31,30 @@ const only = args.filter((arg) => !arg.startsWith('--'));
 fs.mkdirSync(MEDIA_DIR, { recursive: true });
 
 const EXTENSIONS = ['.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg', '.mp4'];
-const hasLocal = (slot) => EXTENSIONS.some((ext) => fs.existsSync(path.join(MEDIA_DIR, slot + ext)));
+
+/* Generated placeholders are fair game to replace; anything the client put
+   there by hand is not. The manifest is written by make-placeholders.mjs. */
+const MANIFEST = path.join(MEDIA_DIR, '.generated.json');
+const generated = fs.existsSync(MANIFEST)
+  ? new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')))
+  : new Set();
+
+const suppliedFile = (slot) =>
+  EXTENSIONS.map((ext) => slot + ext)
+    .find((file) => fs.existsSync(path.join(MEDIA_DIR, file)) && !generated.has(file));
+
+const hasLocal = (slot) => Boolean(suppliedFile(slot));
+
+/* Once a real photo lands, drop the placeholder so nothing stale is shipped. */
+function clearPlaceholder(slot) {
+  for (const ext of EXTENSIONS) {
+    const file = slot + ext;
+    if (ext !== '.jpg' && generated.has(file) && fs.existsSync(path.join(MEDIA_DIR, file))) {
+      fs.unlinkSync(path.join(MEDIA_DIR, file));
+      generated.delete(file);
+    }
+  }
+}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -112,6 +135,7 @@ for (const [slot, source] of Object.entries(mediaSources)) {
   try {
     const picked = KEY ? await viaApi(source.query) : viaCurated(source.photo);
     const bytes = await download(picked.url, path.join(MEDIA_DIR, `${slot}.jpg`));
+    clearPlaceholder(slot);
     results.filled.push(`${slot} (${Math.round(bytes / 1024)} KB)`);
     credits.push(`- \`${slot}\` — ${picked.credit}, ${picked.link}`);
     await sleep(KEY ? 300 : 150);
@@ -119,6 +143,8 @@ for (const [slot, source] of Object.entries(mediaSources)) {
     results.failed.push(`${slot} — ${error.message}`);
   }
 }
+
+fs.writeFileSync(MANIFEST, JSON.stringify([...generated].sort(), null, 2) + '\n');
 
 if (credits.length) {
   fs.writeFileSync(

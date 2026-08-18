@@ -92,7 +92,7 @@ are blocked the same way.
 
 | # | Item | State |
 |---|---|---|
-| 1 | Unsplash placeholders | **Done, runs on your machine.** `npm run media:fetch` — see README. It cannot run from this sandbox because Unsplash is blocked here too. |
+| 1 | Media | **Done.** Drawn placeholders for all 52 slots are committed, so the site renders complete with no network at all. `npm run media:fetch` swaps them for Unsplash photography — that one needs to run on your machine, since Unsplash is blocked here too. |
 | 2 | Exact copy from the live site | **Blocked.** Cannot read the pages. |
 | 3 | Real team roster | **Blocked.** Same reason. Portrait slots left deliberately empty. |
 | 4 | Two service slugs | See below — needs a 10-second check on your side. |

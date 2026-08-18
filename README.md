@@ -132,13 +132,27 @@ Until a file exists the slot renders a designed placeholder printing its own
 name, so the layout is always complete and you can see exactly what to send.
 
 ```bash
-npm run media:list     # every slot, and whether it is filled
-npm run media:fetch    # fill the empty ones with Unsplash placeholders
+npm run media:list          # every slot, and whether it is filled
+npm run media:placeholders  # draw local placeholder artwork (no network)
+npm run media:fetch         # swap placeholders for Unsplash photography
 ```
 
-### Placeholder photography
+### Placeholder artwork (committed)
 
-`npm run media:fetch` downloads stock photography into `public/media/`, driven
+`public/media/` already ships with drawn SVG placeholders for all 52 slots —
+brand-tinted plates with category line art (truck, trailer, container, crane,
+wrench, parking, car carrier, route, portrait, dispatch desk) and the slot name
+printed on them. The site therefore looks complete straight after a clone, with
+no fetching and no network.
+
+They are listed in `public/media/.generated.json`, which is how the other two
+scripts know a file is a placeholder they may replace — anything you drop in by
+hand is never touched.
+
+### Stock photography
+
+`npm run media:fetch` replaces the drawn placeholders with real photography,
+driven
 by `src/data/media-sources.js` where every slot carries its own search term.
 
 - **With a free Unsplash key** — `UNSPLASH_ACCESS_KEY=xxx npm run media:fetch` —
@@ -147,8 +161,8 @@ by `src/data/media-sources.js` where every slot carries its own search term.
 - **Without a key** the script falls back to a small curated set of trucking
   shots. Fewer unique images, zero setup.
 
-Existing files are never overwritten (`--force` to re-download), so client
-photography always wins over stock.
+Generated placeholders are replaced; files you supplied yourself are never
+touched (`--force` re-downloads everything), so client photography always wins.
 
 The five team portrait slots are deliberately left empty: they sit under the
 real names of real employees, and a stock face under someone's name is a
