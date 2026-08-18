@@ -1,0 +1,63 @@
+---
+/**
+ * Brand mark.
+ *
+ * Drop the real logo in as `public/media/logo.svg` (or .png / .webp) and it
+ * replaces the built-in mark everywhere — header, mobile menu, footer, page
+ * transition veil. Until then a neutral truck glyph stands in so nothing is
+ * ever branded wrongly.
+ *
+ * A second file, `logo-light.svg`, is used on light ("bone") surfaces when the
+ * supplied logo is dark. If it is absent the main logo is used on both.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+
+const { variant = 'dark', class: className = '', height = 30 } = Astro.props;
+
+const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
+const EXTENSIONS = ['.svg', '.webp', '.png', '.jpg'];
+
+const find = (name) => {
+  for (const ext of EXTENSIONS) {
+    if (fs.existsSync(path.join(MEDIA_DIR, `${name}${ext}`))) return `/media/${name}${ext}`;
+  }
+  return null;
+};
+
+const main = find('logo');
+const light = find('logo-light');
+const src = variant === 'light' ? (light || main) : main;
+---
+
+{src ? (
+  <img class:list={['logo', className]} src={src} alt="GA Logistics LLC" height={height} />
+) : (
+  <span class:list={['logo logo--fallback', className]}>
+    <span class="logo__mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M2 21h6l3-10h9l3 10h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="10" cy="25" r="2.6" stroke="currentColor" stroke-width="2.2"/>
+        <circle cx="23" cy="25" r="2.6" stroke="currentColor" stroke-width="2.2"/>
+      </svg>
+    </span>
+    <span class="logo__word"><strong>GA</strong> Logistics</span>
+  </span>
+)}
+
+<style>
+  .logo { display: block; width: auto; }
+
+  .logo--fallback {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+  .logo__word strong { font-weight: 800; letter-spacing: -0.03em; }
+  .logo__mark { width: 30px; height: 30px; color: var(--brand-500); }
+  .logo__mark svg { width: 100%; height: 100%; }
+</style>

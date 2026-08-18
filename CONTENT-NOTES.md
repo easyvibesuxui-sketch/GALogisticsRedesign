@@ -81,6 +81,53 @@ word if you want it kept as a redirect target.
 
 ---
 
+---
+
+## Status of the five open items (re-checked)
+
+The egress block was re-tested after the first hand-off and is **still in
+place** — `galogisticsllc.com` returns `403` at the CONNECT stage, for both the
+plain HTTP client and the fetch tool. `unsplash.com` and `images.unsplash.com`
+are blocked the same way.
+
+| # | Item | State |
+|---|---|---|
+| 1 | Unsplash placeholders | **Done, runs on your machine.** `npm run media:fetch` — see README. It cannot run from this sandbox because Unsplash is blocked here too. |
+| 2 | Exact copy from the live site | **Blocked.** Cannot read the pages. |
+| 3 | Real team roster | **Blocked.** Same reason. Portrait slots left deliberately empty. |
+| 4 | Two service slugs | See below — needs a 10-second check on your side. |
+| 5 | Logo and brand colours | **Blocked**, but the site is now ready for them: drop `public/media/logo.svg` in, and set `--brand-500` in `src/styles/tokens.css`. Nothing else changes. |
+
+### Unblocking
+
+Either:
+
+- open `galogisticsllc.com` (and `unsplash.com`, `images.unsplash.com`) in this
+  environment's network policy — see
+  https://code.claude.com/docs/en/claude-code-on-the-web — and everything above
+  resolves itself in one pass; or
+- paste the page texts and attach the logo file, and they go straight into
+  `src/data/`.
+
+### Item 4, restated plainly
+
+Two of the eight service pages were built at a **guessed URL**, because the
+live site's own service list names them but the search index never showed their
+page addresses:
+
+- `/services/parking/` — the "Cargo Pick-up & Trailer Parking" page
+- `/services/car-carrier-dispatch/` — the "Car Carrier Dispatch" page
+
+To confirm: open your site, click those two services in the menu, and read the
+address bar. If it says something else — say `/services/truck-parking/` — tell
+me the real address and I change one line per page. If those pages do not exist
+at all on the live site, tell me and I remove them.
+
+Getting this right matters for SEO: a wrong address means the old page's search
+ranking does not carry over to the new one.
+
+---
+
 ## Needs your input
 
 1. **Section headings.** Editorial headings on the redesigned sections

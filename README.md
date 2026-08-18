@@ -131,7 +131,34 @@ looks best this way).
 Until a file exists the slot renders a designed placeholder printing its own
 name, so the layout is always complete and you can see exactly what to send.
 
-Run `npm run media:list` to print every slot the site is waiting for.
+```bash
+npm run media:list     # every slot, and whether it is filled
+npm run media:fetch    # fill the empty ones with Unsplash placeholders
+```
+
+### Placeholder photography
+
+`npm run media:fetch` downloads stock photography into `public/media/`, driven
+by `src/data/media-sources.js` where every slot carries its own search term.
+
+- **With a free Unsplash key** — `UNSPLASH_ACCESS_KEY=xxx npm run media:fetch` —
+  each slot gets a distinct photo matched to its own term, and credits are
+  written to `public/media/ATTRIBUTION.md`.
+- **Without a key** the script falls back to a small curated set of trucking
+  shots. Fewer unique images, zero setup.
+
+Existing files are never overwritten (`--force` to re-download), so client
+photography always wins over stock.
+
+The five team portrait slots are deliberately left empty: they sit under the
+real names of real employees, and a stock face under someone's name is a
+misrepresentation, not a placeholder.
+
+### Logo
+
+Drop the brand mark in as `public/media/logo.svg` (or `.png` / `.webp`) and it
+replaces the built-in glyph in the header. Add `logo-light.svg` as well if the
+main logo needs a different version on light sections.
 
 ---
 
@@ -146,5 +173,8 @@ Formspree / Netlify Forms / custom endpoint URL and it posts normally.
 ## Re-skinning
 
 `src/styles/tokens.css` is the whole visual system — brand colour, ink and bone
-surfaces, the fluid type scale, spacing rhythm, easings and durations. Change
-`--brand-500` and the entire site follows.
+surfaces, the fluid type scale, spacing rhythm, easings and durations.
+
+`--brand-500` is the **only** authored brand colour. The lighter and darker
+steps derive from it, and every accent, CTA, active state and focus ring
+resolves back to it, so changing that one line re-skins the entire site.
