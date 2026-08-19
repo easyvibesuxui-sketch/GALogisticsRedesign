@@ -1,0 +1,125 @@
+---
+/**
+ * Scroll-driven video backdrop.
+ *
+ * Wraps a run of sections and puts a video behind them whose playhead is tied
+ * to scroll position — it never autoplays and never plays on its own. Scrolling
+ * down advances the footage; scrolling up rewinds it.
+ *
+ * The video is decorative: the sections it sits behind carry all the meaning,
+ * so it is hidden from assistive technology, and under prefers-reduced-motion
+ * it holds a single frame instead of moving.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+
+const {
+  name,                 // file in public/media, without extension
+  start = 0,            // trim: first second of the clip to use
+  end,                  // trim: last second of the clip to use
+  poster,               // optional still shown until the video is decodable
+} = Astro.props;
+
+const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
+
+/* WebM first where one exists — it is markedly smaller at the same quality —
+   with MP4 behind it for Safari and anything older. */
+const TYPES = [['.webm', 'video/webm'], ['.mp4', 'video/mp4']];
+const sources = TYPES
+  .filter(([ext]) => fs.existsSync(path.join(MEDIA_DIR, name + ext)))
+  .map(([ext, type]) => ({ src: `/media/${name}${ext}`, type }));
+const src = sources.length ? sources[0].src : null;
+const posterSrc = poster && fs.existsSync(path.join(MEDIA_DIR, poster)) ? `/media/${poster}` : undefined;
+---
+
+<div class="reel" data-reel>
+  {src && (
+    <div class="reel__stage" aria-hidden="true">
+      <div class="reel__frame">
+        <video
+          class="reel__video"
+          data-reel-video
+          data-reel-start={start}
+          data-reel-end={end}
+          poster={posterSrc}
+          muted
+          playsinline
+          preload="auto"
+          tabindex="-1"
+        >
+          {sources.map((source) => <source src={source.src} type={source.type} />)}
+        </video>
+        <div class="reel__veil"></div>
+        <div class="reel__grid"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  <div class="reel__content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .reel {
+    position: relative;
+    background: var(--ink-900);
+  }
+
+  /* Covers the whole run of sections; the frame inside it sticks to the
+     viewport, so one video carries every section in the group. */
+  .reel__stage {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .reel__frame {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--ink-900);
+  }
+
+  .reel__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Nudged toward the site's palette so footage never fights the brand. */
+    filter: saturate(0.72) contrast(1.06) brightness(0.78);
+  }
+
+  /* Keeps type legible over moving footage: heavier at the edges where the
+     headings and the card row sit. */
+  .reel__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg,
+        rgba(8, 9, 11, 0.92) 0%,
+        rgba(8, 9, 11, 0.62) 26%,
+        rgba(8, 9, 11, 0.68) 62%,
+        rgba(8, 9, 11, 0.94) 100%),
+      linear-gradient(90deg, rgba(8, 9, 11, 0.86) 0%, rgba(8, 9, 11, 0.18) 58%);
+  }
+
+  /* The same column rules the hero uses, so the run reads as one surface. */
+  .reel__grid {
+    position: absolute;
+    inset: 0;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .reel__grid > span { border-left: 1px solid rgba(255, 255, 255, 0.05); }
+
+  .reel__content { position: relative; z-index: 1; }
+
+  /* Sections inside the reel sit on the footage rather than on their own
+     ground. */
+  .reel__content > :global(section) { background: transparent; }
+</style>

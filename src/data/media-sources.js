@@ -124,6 +124,10 @@ export const mediaSources = {
   'gallery-8':     { query: 'mechanic working under truck', photo: curated.country },
   'gallery-9':     { query: 'fleet of trucks lined up', photo: curated.highway, url: photo(curated.country) },
 
+  /* The scroll-driven backdrop behind [01] and [02]. Supplied by the client
+     and re-encoded for scrubbing (see README) — never stock-filled. */
+  reel:            { skip: 'client footage — public/media/reel.mp4' },
+
   /* --- contact ---------------------------------------------------------- */
   'contact-map':   { query: 'aerial highway interchange', photo: curated.turbines },
 };

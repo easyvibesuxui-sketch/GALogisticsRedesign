@@ -354,6 +354,73 @@ function initMarquees() {
 }
 
 /* --------------------------------------------------------------------------
+   7b. Scroll-driven video reel
+
+   The playhead is tied to scroll position across a whole run of sections. The
+   video never autoplays and never runs on its own: scrolling down advances the
+   footage, scrolling up rewinds it.
+   -------------------------------------------------------------------------- */
+
+function initScrollReels() {
+  document.querySelectorAll('[data-reel]').forEach((reel) => {
+    const video = reel.querySelector('[data-reel-video]');
+    if (!video) return;
+
+    const from = parseFloat(video.dataset.reelStart) || 0;
+    const to = parseFloat(video.dataset.reelEnd);
+
+    const metadata = video.readyState >= 1
+      ? Promise.resolve()
+      : new Promise((resolve) => video.addEventListener('loadedmetadata', resolve, { once: true }));
+
+    /* Some browsers decode nothing until a video has been played at least
+       once, which would leave the section on its poster. Priming is deferred
+       to the visitor's first interaction — a real user gesture — and the clip
+       is paused in the same breath, so nothing ever plays on its own. */
+    let primed = false;
+    const prime = () => {
+      if (primed) return;
+      primed = true;
+      const attempt = video.play();
+      if (attempt && attempt.then) attempt.then(() => video.pause()).catch(() => {});
+      else video.pause();
+    };
+    ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach((type) => {
+      window.addEventListener(type, prime, { once: true, passive: true });
+    });
+
+    metadata.then(() => {
+      const last = Number.isFinite(to) ? Math.min(to, video.duration) : video.duration;
+      const span = Math.max(0.05, last - from);
+
+      const seek = (time) => {
+        if (video.readyState < 1) return;
+        if (Math.abs(video.currentTime - time) < 0.008) return;
+        video.currentTime = time;
+      };
+
+      seek(from);
+      if (reduced) return;   // hold the opening frame rather than moving
+
+      const head = { at: 0 };
+
+      gsap.to(head, {
+        at: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: reel,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.35,
+          invalidateOnRefresh: true,
+        },
+        onUpdate: () => seek(from + head.at * span),
+      });
+    });
+  });
+}
+
+/* --------------------------------------------------------------------------
    8. Pinned horizontal track
    -------------------------------------------------------------------------- */
 
@@ -557,7 +624,10 @@ function boot() {
   initHero();
   initCounters();
   initMarquees();
+  /* Pins first: pinning inserts a spacer that changes the height of the reel
+     the pinned section sits inside, and the reel's trigger measures that. */
   initPinnedTracks();
+  initScrollReels();
   initStickStacks();
   initProgress();
   initHeader();

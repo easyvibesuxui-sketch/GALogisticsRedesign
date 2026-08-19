@@ -3,7 +3,7 @@ import Media from './Media.astro';
 import { services } from '../data/services.js';
 ---
 
-<section class="track theme-ink seam-top" data-pin-track aria-label="Our services">
+<section class="track theme-ink" data-pin-track aria-label="Our services">
   <div class="track__head shell">
     <div>
       <span class="sec-head__index" data-reveal="fade">[02]</span>
@@ -51,7 +51,8 @@ import { services } from '../data/services.js';
      scroll, so anything past the fold would simply never be seen. */
   .track {
     position: relative;
-    background: var(--ink-850);
+    /* Sits on the reel's footage; the reel carries the ground. */
+    background: transparent;
     color: var(--fg);
     height: 100svh;
     display: grid;

@@ -92,9 +92,35 @@ Everything is authored as data attributes in markup:
 | `data-magnetic="0.28"` | Element leans toward the cursor |
 | `data-hero-media` / `data-hero-veil` / `data-hero-copy` | Hero scale, veil and copy drift |
 
+### The scroll-driven reel
+
+Sections [01] and [02] on the home page share one video backdrop whose playhead
+is tied to scroll position — `ScrollReel` wraps them, `initScrollReels` maps the
+run's scroll range onto the clip's duration. It never autoplays: scrolling down
+advances the footage, scrolling up rewinds it, and the video stays paused
+throughout. The reel ends before [03], which returns to a solid surface.
+
+`start` / `end` props trim the clip to a sub-range without touching the file.
+
+**Encoding matters more than the file size here.** Source footage usually
+carries one keyframe every few seconds, which means every seek re-decodes from
+the previous keyframe and scrubbing stutters. The clip in `public/media/reel.mp4`
+was re-encoded to a keyframe every 5 frames (0.2s):
+
+```bash
+ffmpeg -i source.mp4 -an -vf "fps=25,scale=1152:-2" \
+  -c:v libx264 -preset slow -crf 27 \
+  -g 5 -keyint_min 5 -sc_threshold 0 \
+  -pix_fmt yuv420p -movflags +faststart public/media/reel.mp4
+```
+
+Drop a `reel.webm` beside it and it is preferred automatically, with the MP4
+kept as the fallback.
+
 **Signature moments**
 
 - Hero media scales and darkens while the copy drifts up and fades out.
+- Sections [01] and [02] sit on one video whose playhead is driven by scroll.
 - Two counter-running tickers, one solid, one outline, both accelerating with scroll velocity.
 - The services section **pins and scrolls sideways** through all eight cards, with its own progress rail.
 - Stat numbers count up; hairline rules draw themselves left to right.
