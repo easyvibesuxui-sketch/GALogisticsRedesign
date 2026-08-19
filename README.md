@@ -128,6 +128,14 @@ Supported extensions, in priority order: `.webp`, `.avif`, `.jpg`, `.jpeg`,
 `.png`, `.svg`, plus `.mp4` (rendered as an autoplaying muted loop — the hero
 looks best this way).
 
+A slot can also be filled **by link**: set `url` on it in
+`src/data/media-sources.js` and the page loads that image directly, wherever it
+is hosted. Useful for pulling an asset off the current site without moving
+files around. `npm run media:fetch` later downloads those URLs into
+`public/media/`, so the launched site no longer depends on the old host.
+
+Resolution order per slot: a file you supplied → `url` → generated placeholder.
+
 Until a file exists the slot renders a designed placeholder printing its own
 name, so the layout is always complete and you can see exactly what to send.
 

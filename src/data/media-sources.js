@@ -5,6 +5,12 @@
    that fits it. `npm run media:fetch` turns this map into real files in
    public/media/, after which the site picks them up automatically.
 
+   A slot may also carry `url`, pointing at an image hosted anywhere (for
+   example one still living on the current galogisticsllc.com). The site loads
+   it straight from there, so a slot can be filled by pasting a link — no
+   download, no file handling. `npm run media:fetch` later pulls those URLs
+   down into public/media/ so the site stops depending on the old host.
+
    Two modes, see scripts/fetch-media.mjs:
 
    1. With an Unsplash access key (UNSPLASH_ACCESS_KEY) — each slot is filled
@@ -83,15 +89,19 @@ export const mediaSources = {
 
   /* --- team ------------------------------------------------------------- */
   'team-hero':     { query: 'logistics team office', photo: curated.convoy },
-  /* Deliberately not filled from stock: these slots sit under the real names of
-     real employees, and a stranger's face under someone's name is a
-     misrepresentation, not a placeholder. They stay empty until the client
-     sends portraits. */
-  'team-1':        { skip: 'real person — needs the client’s own portrait' },
-  'team-2':        { skip: 'real person — needs the client’s own portrait' },
-  'team-3':        { skip: 'real person — needs the client’s own portrait' },
-  'team-4':        { skip: 'real person — needs the client’s own portrait' },
-  'team-5':        { skip: 'real person — needs the client’s own portrait' },
+  /* Real people. Never filled from stock — a stranger's face under someone's
+     name is a misrepresentation, not a placeholder.
+
+     To fill these: open the team page on galogisticsllc.com, right-click each
+     portrait, "Copy image address", and paste it as `url` below. The photo
+     then shows up straight away; `npm run media:fetch` pulls the files down
+     into public/media/ afterwards so the new site stops depending on the old
+     host. Attaching the image files works just as well. */
+  'team-1':        { person: 'Ani Kapanadze',      url: '', skip: 'real person — paste url or attach the photo' },
+  'team-2':        { person: 'Rati Khutiashvili',  url: '', skip: 'real person — paste url or attach the photo' },
+  'team-3':        { person: 'Saba Tchanturidze',  url: '', skip: 'real person — paste url or attach the photo' },
+  'team-4':        { person: 'Ellie Khuluzauri',   url: '', skip: 'real person — paste url or attach the photo' },
+  'team-5':        { person: 'Lucas Miller',       url: '', skip: 'real person — paste url or attach the photo' },
 
   /* --- gallery ---------------------------------------------------------- */
   'gallery-1':     { query: 'semi truck front grille', photo: curated.highway },

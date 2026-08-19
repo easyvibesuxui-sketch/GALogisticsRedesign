@@ -2,13 +2,20 @@
 /**
  * Media slot.
  *
- * Client media arrives later, so every image on the site is addressed by a
- * stable `name`. Drop `public/media/<name>.<ext>` in and the slot switches
- * from a designed placeholder to the real asset at build time — no markup
- * changes anywhere.
+ * Every image on the site is addressed by a stable `name`, never a path.
+ * Resolution order:
+ *
+ *   1. `public/media/<name>.<ext>` — a local file always wins.
+ *   2. `url` on the slot in src/data/media-sources.js — an image hosted
+ *      elsewhere (e.g. still on the current site) is loaded straight from
+ *      there, so a slot can be filled by pasting a link.
+ *   3. A drawn placeholder.
+ *
+ * Nothing in the markup changes between the three.
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { mediaSources } from '../data/media-sources.js';
 
 const {
   name,
@@ -28,17 +35,29 @@ const {
 const EXTENSIONS = ['.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg'];
 const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
 
+/* Generated placeholders rank below a supplied url — they are scaffolding,
+   not content. Files put here by hand outrank everything. */
+const MANIFEST = path.join(MEDIA_DIR, '.generated.json');
+const generated = fs.existsSync(MANIFEST)
+  ? new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')))
+  : new Set();
+
+const remote = mediaSources[name]?.url;
+
 let src = null;
+let placeholder = null;
 for (const ext of EXTENSIONS) {
-  const candidate = path.join(MEDIA_DIR, `${name}${ext}`);
-  if (fs.existsSync(candidate)) {
-    src = `/media/${name}${ext}`;
-    break;
-  }
+  const file = `${name}${ext}`;
+  if (!fs.existsSync(path.join(MEDIA_DIR, file))) continue;
+  if (generated.has(file)) placeholder = `/media/${file}`;
+  else src = `/media/${file}`;
+  if (src) break;
 }
 
 const isVideo = src === null && fs.existsSync(path.join(MEDIA_DIR, `${name}.mp4`));
 const videoSrc = isVideo ? `/media/${name}.mp4` : null;
+
+if (!src && !videoSrc) src = remote || placeholder;
 ---
 
 <figure

@@ -122,7 +122,10 @@ console.log(
 for (const [slot, source] of Object.entries(mediaSources)) {
   if (only.length && !only.includes(slot)) continue;
 
-  if (source.skip) {
+  /* An explicit url wins over everything: it is the real asset, just hosted
+     somewhere else for now. This is also how the skip-listed portrait slots
+     get filled without ever touching stock imagery. */
+  if (!source.url && source.skip) {
     results.skipped.push(`${slot} — ${source.skip}`);
     continue;
   }
@@ -133,11 +136,15 @@ for (const [slot, source] of Object.entries(mediaSources)) {
   }
 
   try {
-    const picked = KEY ? await viaApi(source.query) : viaCurated(source.photo);
+    const picked = source.url
+      ? { url: source.url, credit: 'supplied by the client', link: source.url }
+      : KEY
+        ? await viaApi(source.query)
+        : viaCurated(source.photo);
     const bytes = await download(picked.url, path.join(MEDIA_DIR, `${slot}.jpg`));
     clearPlaceholder(slot);
     results.filled.push(`${slot} (${Math.round(bytes / 1024)} KB)`);
-    credits.push(`- \`${slot}\` — ${picked.credit}, ${picked.link}`);
+    if (!source.url) credits.push(`- \`${slot}\` — ${picked.credit}, ${picked.link}`);
     await sleep(KEY ? 300 : 150);
   } catch (error) {
     results.failed.push(`${slot} — ${error.message}`);
