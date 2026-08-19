@@ -227,6 +227,8 @@ export const team = {
       'Each team has its own team leader, and our dispatchers have years of experience in the industry and work closely with drivers to ensure timely deliveries.',
     ],
   },
+  /* Roster confirmed by the client. Roles other than Ani Kapanadze's are still
+     inferred — replace them with the titles used on the live site. */
   members: [
     {
       name: 'Ani Kapanadze',

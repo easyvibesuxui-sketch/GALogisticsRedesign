@@ -94,7 +94,7 @@ are blocked the same way.
 |---|---|---|
 | 1 | Media | **Done.** Drawn placeholders for all 52 slots are committed, so the site renders complete with no network at all. `npm run media:fetch` swaps them for Unsplash photography — that one needs to run on your machine, since Unsplash is blocked here too. |
 | 2 | Exact copy from the live site | **Blocked.** Cannot read the pages. |
-| 3 | Real team roster | **Blocked.** Same reason. Portrait slots left deliberately empty. |
+| 3 | Real team roster | **Names confirmed by the client:** Ani Kapanadze, Rati Khutiashvili, Saba Tchanturidze, Ellie Khuluzauri, Lucas Miller. Roles beyond Ani's are still inferred, and the portraits are still needed — paste the image addresses into `url` on the `team-*` slots, or attach the files. |
 | 4 | Two service slugs | See below — needs a 10-second check on your side. |
 | 5 | Logo and brand colours | **Done.** The badge you sent is in as `public/media/logo.webp` and drives the header, favicon and touch icon. `--brand-500` is now `#49ef45`, sampled from the artwork itself. |
 
@@ -134,9 +134,10 @@ ranking does not carry over to the new one.
    ("Ten years on the road…", "Eight services. One dispatch desk.", "Pick a
    lane.") are new writing for the new layout. Replace them with the live
    headings if the originals must be preserved word for word.
-2. **Team roster.** Ani Kapanadze, Rati Khutiashvili, Saba Tchanturidze,
-   Ellie Khuluzauri and Lucas Miller came from indexed profiles. Confirm the
-   real list, roles and spellings.
+2. **Team roles.** The five names are confirmed. Only Ani Kapanadze's title is
+   sourced ("dispatcher and one of the team leaders", plus dispatching course
+   trainer); the other four are listed as "Dispatcher" by inference. Send the
+   real titles if they differ.
 3. **Two service slugs** — parking and car-carrier-dispatch, above.
 4. **Driver / CDL jobs page.** The site advertises CDL driver jobs but no
    dedicated URL surfaced. If one exists, it should be added.
