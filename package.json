@@ -12,7 +12,8 @@
     "astro": "astro",
     "media:list": "node src/data/media-slots.mjs",
     "media:fetch": "node scripts/fetch-media.mjs",
-    "media:placeholders": "node scripts/make-placeholders.mjs"
+    "media:placeholders": "node scripts/make-placeholders.mjs",
+    "preview:file": "astro build && node scripts/build-preview.mjs"
   },
   "dependencies": {
     "astro": "^7.2.3",

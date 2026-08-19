@@ -203,7 +203,11 @@ import { services, serviceGroups } from '../data/services.js';
 </style>
 
 <script>
-  /* Cursor-following preview for the service index list. */
+  /* Cursor-following preview for the service index list.
+     gsap is imported statically: the motion engine already pulls it into every
+     page, so a dynamic import here saves nothing and only adds a second chunk. */
+  import { gsap } from 'gsap';
+
   const scope = document.querySelector('[data-service-list]');
   const layer = document.querySelector('[data-preview-layer]');
 
@@ -211,7 +215,6 @@ import { services, serviceGroups } from '../data/services.js';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (scope && layer && fine && !reduced) {
-    const { gsap } = await import('gsap');
     const items = new Map(
       [...layer.querySelectorAll('[data-preview-for]')].map((node) => [node.dataset.previewFor, node])
     );
