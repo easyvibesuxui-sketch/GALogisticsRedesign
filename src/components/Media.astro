@@ -58,6 +58,10 @@ const isVideo = src === null && fs.existsSync(path.join(MEDIA_DIR, `${name}.mp4`
 const videoSrc = isVideo ? `/media/${name}.mp4` : null;
 
 if (!src && !videoSrc) src = remote || placeholder;
+
+/* When the image is loaded from another host, keep the drawn plate as a
+   fallback so a slot never renders empty. */
+const fallback = src === remote && placeholder ? placeholder : undefined;
 ---
 
 <figure
@@ -77,7 +81,14 @@ if (!src && !videoSrc) src = remote || placeholder;
         <video src={videoSrc} autoplay muted loop playsinline aria-label={alt}></video>
       )}
       {src && !videoSrc && (
-        <img src={src} alt={alt} loading={loading} decoding="async" sizes={sizes} />
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          decoding="async"
+          sizes={sizes}
+          data-fallback={fallback}
+        />
       )}
       {!src && !videoSrc && (
         <div class="media__placeholder" role="img" aria-label={alt || `Image slot: ${name}`}>

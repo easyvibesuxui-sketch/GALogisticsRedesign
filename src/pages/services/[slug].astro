@@ -66,7 +66,7 @@ const { service, next, others } = Astro.props;
   </section>
 
   <!-- Points --------------------------------------------------------------- -->
-  <section class="points theme-bone section">
+  <section class="points theme-bone section seam-top">
     <div class="shell">
       <SectionHead index="02" eyebrow="What it includes" heading={`Inside ${service.label.toLowerCase()}.`} />
       <ol class="points__grid" data-reveal-group="100">
@@ -82,7 +82,7 @@ const { service, next, others } = Astro.props;
   </section>
 
   <!-- Media pair ----------------------------------------------------------- -->
-  <section class="spair theme-ink section" data-parallax-scope>
+  <section class="spair theme-ink section seam-top" data-parallax-scope>
     <div class="shell spair__grid">
       <Media name={service.media.gallery[0]} alt={service.title} ratio="4 / 5" parallax parallaxSpeed="0.11" revealFrom="left" />
       <Media name={service.media.gallery[1]} alt={service.title} ratio="4 / 5" parallax parallaxSpeed="0.05" revealDelay="140" />

@@ -71,6 +71,19 @@ const organization = {
     <script is:inline>
       /* Set before first paint so motion styles never flash unstyled content. */
       document.documentElement.classList.add('js');
+
+      /* Images that come from a remote host fall back to the local placeholder
+         if the host is unreachable, so a slot is never left blank. Registered
+         here, in the head, because an image can fail before any module runs.
+         `error` does not bubble, hence the capture phase. */
+      document.addEventListener('error', function (event) {
+        var img = event.target;
+        if (!img || img.tagName !== 'IMG') return;
+        var fallback = img.getAttribute('data-fallback');
+        if (!fallback || img.dataset.usedFallback) return;
+        img.dataset.usedFallback = '1';
+        img.src = fallback;
+      }, true);
     </script>
 
     <script type="application/ld+json" set:html={JSON.stringify(organization)} />

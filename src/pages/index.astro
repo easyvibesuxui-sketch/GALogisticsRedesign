@@ -24,7 +24,7 @@ import { gallery } from '../data/pages.js';
   </section>
 
   <!-- 01 — Who we are ---------------------------------------------------- -->
-  <section class="intro theme-bone section" data-parallax-scope>
+  <section class="intro theme-bone section seam-top seam-under" data-parallax-scope>
     <div class="shell intro__grid">
       <div class="intro__copy">
         <span class="sec-head__index" data-reveal="fade">[{home.intro.index}]</span>
@@ -71,7 +71,7 @@ import { gallery } from '../data/pages.js';
   />
 
   <!-- 04 — Coverage ------------------------------------------------------- -->
-  <section class="coverage theme-ink section" data-parallax-scope>
+  <section class="coverage theme-ink section seam-top" data-parallax-scope>
     <div class="coverage__mark" aria-hidden="true" data-parallax data-parallax-speed="0.16">48</div>
     <div class="shell coverage__grid">
       <div class="coverage__copy">
@@ -110,7 +110,7 @@ import { gallery } from '../data/pages.js';
   />
 
   <!-- 06 — Team teaser ---------------------------------------------------- -->
-  <section class="teamteaser theme-bone section" data-parallax-scope>
+  <section class="teamteaser theme-bone section seam-top" data-parallax-scope>
     <div class="shell teamteaser__grid">
       <div class="teamteaser__media">
         <Media name="team-teaser" alt="GA Logistics dispatchers" ratio="4 / 5" parallax parallaxSpeed="0.09" revealFrom="left" />
@@ -132,7 +132,7 @@ import { gallery } from '../data/pages.js';
   </section>
 
   <!-- 07 — Gallery teaser ------------------------------------------------- -->
-  <section class="gteaser theme-ink section" data-parallax-scope>
+  <section class="gteaser theme-ink section seam-top" data-parallax-scope>
     <div class="shell">
       <SectionHead
         index={home.galleryTeaser.index}
@@ -297,7 +297,14 @@ import { gallery } from '../data/pages.js';
     .gteaser__cell--4 { grid-column: span 2; }
   }
   @media (max-width: 560px) {
-    .intro__badge { left: 0.75rem; bottom: 0.75rem; padding: 0.85rem 1rem; }
+    /* Anchored to the top on narrow screens: the figure's caption sits at the
+       bottom, and at this width the badge would land on top of it. */
+    .intro__badge {
+      left: 0.75rem;
+      top: 0.75rem;
+      bottom: auto;
+      padding: 0.85rem 1rem;
+    }
     .intro__badge-num { font-size: 1.75rem; }
   }
 </style>

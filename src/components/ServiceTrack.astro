@@ -3,7 +3,7 @@ import Media from './Media.astro';
 import { services } from '../data/services.js';
 ---
 
-<section class="track theme-ink" data-pin-track aria-label="Our services">
+<section class="track theme-ink seam-top" data-pin-track aria-label="Our services">
   <div class="track__head shell">
     <div>
       <span class="sec-head__index" data-reveal="fade">[02]</span>
@@ -11,12 +11,15 @@ import { services } from '../data/services.js';
       <h2 class="track__title" data-split data-reveal-delay="120">Eight services. One dispatch desk.</h2>
     </div>
     <div class="track__meta">
-      <p class="u-body">Drag or keep scrolling — the whole operation moves sideways.</p>
+      <p class="u-body">Keep scrolling — the whole operation moves sideways.</p>
+      <p class="track__count" aria-hidden="true">
+        <span data-pin-index>01</span><span class="track__count-sep">/</span><span>{String(services.length).padStart(2, '0')}</span>
+      </p>
       <div class="track__progress" aria-hidden="true"><i data-pin-progress></i></div>
     </div>
   </div>
 
-  <div class="track__viewport">
+  <div class="track__viewport" data-pin-stage>
     <ol class="track__lane" data-pin-lane>
       {services.map((service) => (
         <li class="tcard">
@@ -44,20 +47,20 @@ import { services } from '../data/services.js';
 </section>
 
 <style>
-  /* The stage is exactly one viewport tall so nothing is cut off while the
-     section is pinned. */
+  /* Exactly one viewport tall: while the section is pinned there is no way to
+     scroll, so anything past the fold would simply never be seen. */
   .track {
+    position: relative;
     background: var(--ink-850);
     color: var(--fg);
-    min-height: 100svh;
+    height: 100svh;
     display: grid;
     /* minmax(0,…) stops the very wide lane from inflating the grid column and
        dragging the centred header off-screen with it. */
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    align-content: center;
-    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
-    padding-block: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(1.25rem, 0.8rem + 1.6vw, 2.5rem);
+    padding-block: clamp(1.75rem, 1rem + 2.6vw, 3.5rem);
     overflow: hidden;
   }
 
@@ -72,10 +75,25 @@ import { services } from '../data/services.js';
     max-width: 14ch;
     font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.5rem);
   }
-  .track__meta { max-width: 30ch; padding-bottom: 0.5rem; }
+  .track__meta { max-width: 30ch; padding-bottom: 0.25rem; }
+
+  .track__count {
+    margin-top: 0.85rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .track__count-sep { color: var(--fg-faint); }
+  .track__count span:last-child { color: var(--fg-faint); }
+  .track__count [data-pin-index] { color: var(--accent); }
 
   .track__progress {
-    margin-top: 1.5rem;
+    margin-top: 0.85rem;
     height: 2px;
     background: var(--line);
     overflow: hidden;
@@ -88,25 +106,33 @@ import { services } from '../data/services.js';
     transform-origin: left center;
   }
 
-  .track__viewport { width: 100%; min-width: 0; display: flex; align-items: stretch; }
+  .track__viewport { width: 100%; min-width: 0; min-height: 0; }
 
+  /* One grid for the whole lane: every card subgrids these two rows, so the
+     copy blocks line up across cards and the media absorbs the difference. */
   .track__lane {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(268px, 25vw, 400px);
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: clamp(1rem, 0.5rem + 1.4vw, 2rem);
+    height: 100%;
     padding-inline: var(--gutter);
     will-change: transform;
   }
 
   .tcard {
-    flex: none;
-    width: clamp(268px, 25vw, 400px);
-    height: clamp(380px, 56svh, 560px);
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    min-width: 0;
+    min-height: 0;
   }
 
   .tcard__link {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
     min-height: 0;
     background: var(--ink-800);
     border: 1px solid var(--line);
@@ -132,9 +158,8 @@ import { services } from '../data/services.js';
     border-radius: var(--radius-pill);
   }
 
-  /* Fixed-ratio media band so every card's copy starts on the same line; the
-     body then flexes and pins its link to the bottom edge. */
-  .tcard__media { overflow: hidden; flex: none; aspect-ratio: 4 / 3; }
+  /* The media takes whatever height the tallest copy block leaves over. */
+  .tcard__media { overflow: hidden; min-height: 0; }
   .tcard__media :global(.media),
   .tcard__media :global(.media__frame) { height: 100%; aspect-ratio: auto; }
   .tcard__media :global(.media__frame) { border-radius: 0; border: 0; border-bottom: 1px solid var(--line); }
@@ -145,9 +170,14 @@ import { services } from '../data/services.js';
     padding: clamp(1.1rem, 0.9rem + 0.7vw, 1.75rem);
     display: grid;
     gap: 0.55rem;
-    flex: 1;
-    min-height: 0;
     align-content: start;
+  }
+
+  /* Without subgrid the rows cannot be shared, so hold the copy block to a
+     common height instead. */
+  @supports not (grid-template-rows: subgrid) {
+    .track__lane { grid-template-rows: minmax(0, 1fr); }
+    .tcard, .tcard__link { grid-row: auto; grid-template-rows: minmax(0, 1fr) 13.5rem; }
   }
 
   .tcard__eyebrow {
@@ -161,7 +191,6 @@ import { services } from '../data/services.js';
   .tcard__text { font-size: var(--fs-body-sm); color: var(--fg-muted); }
 
   .tcard__cta {
-    margin-top: auto;
     padding-top: 0.75rem;
     display: inline-flex;
     align-items: center;
@@ -184,9 +213,9 @@ import { services } from '../data/services.js';
   .track.is-static .tcard { scroll-snap-align: start; width: min(78vw, 340px); }
 
   @media (max-width: 900px) {
-    .track { min-height: 0; display: block; padding-block: var(--section-y); }
+    .track { height: auto; display: block; padding-block: var(--section-y); }
     .track__head { flex-direction: column; align-items: flex-start; margin-bottom: 2.5rem; }
-    .tcard { height: auto; }
+    .track__lane { grid-auto-columns: min(78vw, 340px); grid-template-rows: auto auto; height: auto; }
     .track__viewport {
       overflow-x: auto;
       scroll-snap-type: x mandatory;

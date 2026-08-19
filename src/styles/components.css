@@ -236,6 +236,25 @@
   -webkit-text-stroke: 1px var(--line-strong);
 }
 
+/* --- Seam ------------------------------------------------------------------
+   Where the page changes between its light and dark surfaces, the arriving
+   section is laid *over* the one above it rather than butted against it. The
+   overlap plus the rounded top edge reads as one panel sliding over another,
+   which is what stops a light-to-dark change from landing as a hard cut.
+   -------------------------------------------------------------------------- */
+
+.seam-top {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--seam));
+  border-top-left-radius: var(--seam);
+  border-top-right-radius: var(--seam);
+}
+
+/* The section underneath needs room so its last line never sits beneath the
+   arriving panel. */
+.seam-under { padding-bottom: calc(var(--section-y) + var(--seam)); }
+
 /* --- Scroll progress ------------------------------------------------------ */
 
 .progress {

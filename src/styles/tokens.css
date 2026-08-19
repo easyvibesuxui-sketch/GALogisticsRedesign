@@ -68,6 +68,10 @@
   --shell: 1680px;
   --measure: 62ch;
   --section-y: clamp(4.5rem, 2.5rem + 8vw, 11rem);
+  /* Overlap used where a dark panel is laid over the section above it, so the
+     light-to-dark change reads as one surface over another, not a butt joint.
+     Doubles as that panel's corner radius. */
+  --seam: clamp(1.5rem, 1rem + 2.4vw, 3.25rem);
   --radius-sm: 4px;
   --radius: 10px;
   --radius-lg: 20px;

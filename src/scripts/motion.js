@@ -359,36 +359,68 @@ function initMarquees() {
 
 function initPinnedTracks() {
   document.querySelectorAll('[data-pin-track]').forEach((section) => {
-    const track = section.querySelector('[data-pin-lane]');
-    if (!track) return;
+    const lane = section.querySelector('[data-pin-lane]');
+    if (!lane) return;
 
     const progressBar = section.querySelector('[data-pin-progress]');
+    const indexOut = section.querySelector('[data-pin-index]');
+    const stage = section.querySelector('[data-pin-stage]') || section;
+    const cards = [...lane.children];
 
     if (reduced || window.innerWidth < 900) {
       section.classList.add('is-static');
       return;
     }
 
-    const getDistance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+    const getDistance = () => Math.max(0, lane.scrollWidth - window.innerWidth);
 
-    const tween = gsap.to(track, {
-      x: () => -getDistance(),
-      ease: 'none',
+    /* Fraction of the pinned scroll spent holding still at each end. Without
+       it the page stops scrolling and starts moving sideways in the same
+       frame, which reads as the scroll being snatched away. The holds give the
+       section a moment to arrive and a moment to finish. */
+    const HOLD = 0.16;
+
+    const timeline = gsap.timeline({
+      defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: () => `+=${getDistance() + window.innerHeight * 0.5}`,
+        end: () => `+=${getDistance() + window.innerHeight * 1.15}`,
         pin: true,
-        scrub: 0.6,
+        scrub: 1,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          if (progressBar) gsap.set(progressBar, { scaleX: self.progress });
+          const travel = gsap.utils.clamp(
+            0, 1,
+            (self.progress * (1 + HOLD * 2) - HOLD)
+          );
+
+          if (progressBar) gsap.set(progressBar, { scaleX: travel });
+
+          if (indexOut && cards.length) {
+            /* Report the card currently at the left edge of the stage rather
+               than a number derived from progress — it stays true whatever the
+               viewport does to the card width. The lane itself is the thing
+               being moved, so its own box cannot be the reference. */
+            const edge = stage.getBoundingClientRect().left;
+            let current = 0;
+            let nearest = Infinity;
+            cards.forEach((card, i) => {
+              const gap = Math.abs(card.getBoundingClientRect().left - edge);
+              if (gap < nearest) { nearest = gap; current = i; }
+            });
+            const label = String(current + 1).padStart(2, '0');
+            if (indexOut.textContent !== label) indexOut.textContent = label;
+          }
         },
       },
     });
 
-    return tween;
+    timeline
+      .to({}, { duration: HOLD })                                // arrive
+      .to(lane, { x: () => -getDistance(), duration: 1 })        // travel
+      .to({}, { duration: HOLD });                               // settle
   });
 }
 
