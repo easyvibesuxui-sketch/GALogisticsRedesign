@@ -1,7 +1,7 @@
 ---
 import Media from './Media.astro';
 import Button from './Button.astro';
-import { stats } from '../data/site.js';
+import { services } from '../data/services.js';
 
 const {
   hero,
@@ -10,6 +10,13 @@ const {
      of the first. */
   backdrop = true,
 } = Astro.props;
+
+/* The card cycles through the service list. It reads them straight off the
+   rail markup, so nothing has to be serialised into a script tag. */
+const cards = services.map((service) => ({
+  label: service.label,
+  href: `/services/${service.slug}/`,
+}));
 ---
 
 <section class="hero theme-ink" data-parallax-scope>
@@ -19,58 +26,136 @@ const {
         <Media name={hero.media} alt="" ratio="16 / 9" reveal={null} loading="eager" class="hero__mediaslot" />
       </div>
       <div class="hero__veil" data-hero-veil></div>
-      <div class="hero__lines" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
     </div>
   )}
 
-  <div class="shell hero__inner">
+  <!-- Masthead band: the initials set as an outline, the full name closing the
+       line on the right. Decorative — the header logo and the h1 carry the
+       actual identity. -->
+  <div class="shell hero__band" aria-hidden="true">
+    <span class="hero__marks">
+      <span class="hero__mark" data-reveal="up">G<i>.</i></span>
+      <span class="hero__mark" data-reveal="up" data-reveal-delay="90">A<i>.</i></span>
+    </span>
+    <span class="hero__bandtail" data-reveal="up" data-reveal-delay="180">Logistics LLC</span>
+  </div>
+  <div class="shell hero__rulewrap"><span class="hero__rule" data-reveal="rule" data-reveal-delay="260"></span></div>
+
+  <div class="shell hero__main">
     <div class="hero__copy" data-hero-copy>
-      <p class="u-eyebrow hero__eyebrow" data-reveal="up">{hero.eyebrow}</p>
-      <h1 class="hero__title" data-split data-split-step="105" data-reveal-delay="120">{hero.heading}</h1>
-      <p class="hero__lead" data-reveal="blur" data-reveal-delay="620">{hero.lead}</p>
-      <div class="hero__actions" data-reveal-group="90" data-reveal-delay="760">
-        {hero.actions.map((action) => (
-          <div data-reveal="up">
-            <Button href={action.href} label={action.label} variant={action.variant} />
-          </div>
-        ))}
-      </div>
+      <p class="u-eyebrow hero__eyebrow" data-reveal="up" data-reveal-delay="320">{hero.eyebrow}</p>
+      <h1 class="hero__title" data-split data-split-step="105" data-reveal-delay="380">{hero.heading}</h1>
+      <p class="hero__lead" data-reveal="blur" data-reveal-delay="760">{hero.lead}</p>
+      {hero.actions && (
+        <div class="hero__actions" data-reveal-group="90" data-reveal-delay="880">
+          {hero.actions.map((action) => (
+            <div data-reveal="up">
+              <Button href={action.href} label={action.label} variant={action.variant} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
+
+    <aside class="hero__card theme-bone" data-hero-card data-reveal="up" data-reveal-delay="940">
+      <p class="hero__card-label">Our services</p>
+      <span class="hero__card-hair" aria-hidden="true"></span>
+
+      <a class="hero__card-link" href={cards[0].href} data-hero-card-link>
+        <span class="hero__card-name" data-hero-card-name>{cards[0].label}</span>
+        <span class="hero__card-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M4.5 11.5 11.5 4.5M5.6 4.5h5.9v5.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <ol class="hero__card-rail" aria-hidden="true">
+        {cards.map((card, i) => (
+          <li class="hero__card-tick" data-hero-item data-label={card.label} data-href={card.href} data-on={i === 0 ? '' : undefined}></li>
+        ))}
+      </ol>
+    </aside>
   </div>
 
-  <div class="hero__foot">
-    <div class="shell hero__footinner">
-      <ul class="hero__stats" data-reveal-group="70" data-reveal-delay="420">
-        {stats.map((stat) => (
-          <li class="hero__stat" data-reveal="up">
-            <span class="hero__stat-value u-num">
-              <span data-count={stat.value}>{stat.value}</span>{stat.suffix}
-            </span>
-            <span class="hero__stat-label">{stat.label}</span>
-          </li>
-        ))}
-      </ul>
-
-      <a class="hero__cue" href="#after-hero" aria-label="Scroll to content">
-        <span class="hero__cue-label">{hero.scrollCue}</span>
-        <span class="hero__cue-rail" aria-hidden="true"><i></i></span>
-      </a>
-    </div>
+  <div class="shell hero__foot">
+    <a class="hero__cue" href="#after-hero" aria-label="Scroll to content">
+      <span class="hero__cue-rail" aria-hidden="true"><i></i></span>
+      <span class="hero__cue-label">{hero.scrollCue ?? 'Scroll'}</span>
+    </a>
   </div>
 </section>
 <span id="after-hero"></span>
+
+<script>
+  /* Cycles the service shown on the hero card. It holds still while the
+     pointer or keyboard focus is inside the card, so the link is never a
+     moving target at the moment of the click. */
+  const card = document.querySelector('[data-hero-card]');
+
+  if (card && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const items = Array.from(card.querySelectorAll('[data-hero-item]'));
+    const link = card.querySelector('[data-hero-card-link]');
+    const name = card.querySelector('[data-hero-card-name]');
+
+    if (items.length > 1 && link && name) {
+      const INTERVAL = 3600;
+      let index = 0;
+      let timer = 0;
+      let held = false;
+      let onScreen = true;
+
+      const show = (next) => {
+        const item = items[next];
+        if (!item) return;
+        index = next;
+        name.textContent = item.dataset.label || '';
+        link.setAttribute('href', item.dataset.href || '#');
+        items.forEach((tick, i) => tick.toggleAttribute('data-on', i === next));
+        name.classList.remove('is-swap');
+        void name.offsetWidth; // restart the fade
+        name.classList.add('is-swap');
+      };
+
+      const stop = () => { clearInterval(timer); timer = 0; };
+      const start = () => {
+        stop();
+        if (held || !onScreen) return;
+        timer = window.setInterval(() => show((index + 1) % items.length), INTERVAL);
+      };
+
+      const hold = (state) => { held = state; state ? stop() : start(); };
+      card.addEventListener('pointerenter', () => hold(true));
+      card.addEventListener('pointerleave', () => hold(false));
+      card.addEventListener('focusin', () => hold(true));
+      card.addEventListener('focusout', () => hold(false));
+
+      document.addEventListener('visibilitychange', () => {
+        onScreen = !document.hidden;
+        start();
+      });
+
+      /* Nothing rotates once the hero has scrolled away. */
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          onScreen = entries[0].isIntersecting && !document.hidden;
+          start();
+        }, { threshold: 0 }).observe(card);
+      }
+
+      start();
+    }
+  }
+</script>
 
 <style>
   .hero {
     position: relative;
     min-height: 100svh;
     display: grid;
-    grid-template-rows: 1fr auto;
-    align-items: end;
-    padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 6vw, 8rem));
-    padding-bottom: 0;
+    grid-template-rows: auto auto 1fr auto;
+    padding-top: calc(var(--header-h) + clamp(1.75rem, 1rem + 3vw, 3.75rem));
+    padding-bottom: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
     background: var(--ink-900);
     color: var(--fg);
     overflow: hidden;
@@ -102,104 +187,180 @@ const {
       linear-gradient(90deg, rgba(8, 9, 11, 0.9) 0%, rgba(8, 9, 11, 0.25) 62%, rgba(8, 9, 11, 0.55) 100%);
   }
 
-  /* Column rules: a quiet grid that gives the type something to sit against. */
-  .hero__lines {
-    position: absolute;
-    inset: 0;
+  /* --- masthead band ----------------------------------------------------- */
+
+  .hero__band {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    line-height: 0.86;
+  }
+
+  .hero__marks { display: flex; align-items: baseline; gap: clamp(0.75rem, 0.4rem + 1.4vw, 2rem); }
+
+  .hero__mark {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 1.6rem + 3.4vw, 5rem);
+    font-weight: 800;
+    font-stretch: calc(var(--wdth-hero) * 1%);
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.34);
+  }
+  @supports not (-webkit-text-stroke: 1px red) {
+    .hero__mark { color: rgba(255, 255, 255, 0.16); }
+  }
+  .hero__mark i {
+    font-style: normal;
+    color: var(--brand-500);
+    -webkit-text-stroke: 0;
+  }
+
+  .hero__bandtail {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-sm);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    white-space: nowrap;
+  }
+
+  .hero__rulewrap { margin-top: clamp(0.75rem, 0.5rem + 0.8vw, 1.25rem); }
+  .hero__rule {
+    display: block;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  /* --- main row ---------------------------------------------------------- */
+
+  .hero__main {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    max-width: var(--shell);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-    pointer-events: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20.5rem);
+    align-items: end;
+    gap: clamp(2rem, 1rem + 3vw, 4.5rem);
+    padding-block: clamp(2rem, 1.25rem + 2.6vw, 3.5rem) 0;
   }
-  .hero__lines span {
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
-    transform: scaleY(0);
-    transform-origin: top;
-    animation: hero-rule 1.6s var(--ease-mask) forwards;
-  }
-  .hero__lines span:nth-child(2) { animation-delay: 90ms; }
-  .hero__lines span:nth-child(3) { animation-delay: 180ms; }
-  .hero__lines span:nth-child(4) { animation-delay: 270ms; }
-  .hero__lines span:nth-child(5) { animation-delay: 360ms; }
-  @keyframes hero-rule { to { transform: scaleY(1); } }
 
-  .hero__inner { width: 100%; padding-bottom: clamp(3rem, 2rem + 5vw, 7rem); }
-
-  .hero__copy { max-width: min(1180px, 100%); }
+  .hero__copy { max-width: none; }
 
   .hero__title {
-    margin-top: 1.5rem;
+    margin-top: 1.15rem;
     font-size: var(--fs-h1);
     font-weight: 800;
-    letter-spacing: -0.045em;
-    line-height: 0.92;
-    max-width: 16ch;
+    font-stretch: calc(var(--wdth-hero) * 1%);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    max-width: 19ch;
     text-wrap: balance;
   }
 
   .hero__lead {
-    margin-top: clamp(1.5rem, 1rem + 1.4vw, 2.5rem);
-    max-width: 58ch;
-    font-size: var(--fs-lead);
-    line-height: 1.5;
-    color: rgba(242, 243, 244, 0.72);
-    letter-spacing: -0.012em;
+    margin-top: clamp(1.25rem, 0.9rem + 1.1vw, 2rem);
+    max-width: 52ch;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: rgba(242, 243, 244, 0.68);
+    letter-spacing: -0.008em;
   }
 
   .hero__actions {
-    margin-top: clamp(2rem, 1.4rem + 1.8vw, 3rem);
+    margin-top: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
     display: flex;
     flex-wrap: wrap;
-    gap: 0.85rem;
+    gap: 1.5rem;
   }
 
-  /* --- foot bar ---------------------------------------------------------- */
+  /* --- service card ------------------------------------------------------ */
 
-  .hero__foot {
-    position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: color-mix(in srgb, var(--ink-900) 55%, transparent);
-    backdrop-filter: blur(8px);
+  .hero__card {
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: var(--r-lg, 4px);
+    padding: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
   }
 
-  .hero__footinner {
+  .hero__card-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+
+  .hero__card-hair { display: block; height: 1px; background: var(--line); }
+
+  .hero__card-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
-    padding-block: clamp(1.25rem, 1rem + 1vw, 2rem);
+    gap: 1rem;
+    min-height: 3.25rem;
+    color: inherit;
+    text-decoration: none;
   }
 
-  .hero__stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(1rem, 0.5rem + 2vw, 3.5rem);
-    flex: 1;
-  }
-
-  .hero__stat { display: grid; gap: 0.3rem; }
-
-  .hero__stat-value {
-    font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.5rem);
+  .hero__card-name {
+    font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1;
+    font-stretch: calc(var(--wdth-display) * 1%);
+    font-size: var(--fs-h4);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
   }
-  .hero__stat-value :global(span) { font-variant-numeric: tabular-nums; }
+  .hero__card-name.is-swap { animation: card-swap 0.5s var(--ease-out) both; }
+  @keyframes card-swap {
+    from { opacity: 0; transform: translateY(0.45em); }
+    to { opacity: 1; transform: none; }
+  }
 
-  .hero__stat-label {
-    font-size: 0.75rem;
-    line-height: 1.45;
-    color: var(--fg-faint);
-    max-width: 20ch;
+  .hero__card-arrow {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
+      border-color var(--t-fast) var(--ease-out);
+  }
+  .hero__card-arrow svg { width: 1rem; height: 1rem; }
+  .hero__card-link:hover .hero__card-arrow,
+  .hero__card-link:focus-visible .hero__card-arrow {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  .hero__card-rail { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .hero__card-tick {
+    flex: 1;
+    height: 2px;
+    background: var(--line);
+    transition: background var(--t-fast) var(--ease-out);
+  }
+  .hero__card-tick[data-on] { background: var(--accent); }
+
+  /* --- foot -------------------------------------------------------------- */
+
+  .hero__foot {
+    display: flex;
+    align-items: flex-end;
+    padding-top: clamp(1.25rem, 0.9rem + 1.4vw, 2.25rem);
   }
 
   .hero__cue {
-    display: inline-grid;
-    justify-items: center;
-    gap: 0.6rem;
-    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
   }
   .hero__cue-label {
     font-family: var(--font-mono);
@@ -210,8 +371,8 @@ const {
   }
   .hero__cue-rail {
     display: block;
-    width: 1px;
-    height: 46px;
+    width: 42px;
+    height: 1px;
     background: rgba(255, 255, 255, 0.14);
     overflow: hidden;
     position: relative;
@@ -219,22 +380,46 @@ const {
   .hero__cue-rail i {
     position: absolute;
     inset: 0 auto auto 0;
-    width: 1px;
-    height: 40%;
+    height: 1px;
+    width: 40%;
     background: var(--brand-500);
     animation: cue-run 2.1s var(--ease-in-out) infinite;
   }
   @keyframes cue-run {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(250%); }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
   }
 
-  @media (max-width: 1024px) {
-    .hero__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hero__cue { display: none; }
+  /* Below the two-column breakpoint the card drops under the copy, so it
+     folds into a single bar — a stacked card pushes the whole hero past the
+     fold on a tablet. */
+  @media (max-width: 900px) {
+    .hero__main {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    }
+
+    .hero__card {
+      max-width: none;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 0.75rem 1.5rem;
+      padding: 1rem clamp(1rem, 0.8rem + 0.6vw, 1.5rem);
+    }
+    .hero__card-hair { display: none; }
+    .hero__card-link { grid-column: 2; grid-row: 1; min-height: 0; justify-self: end; }
+    .hero__card-name { flex: 1; }
+    .hero__card-arrow { width: 2rem; height: 2rem; }
+    .hero__card-rail { grid-column: 1 / -1; }
   }
+
   @media (max-width: 560px) {
-    .hero__stats { gap: 1rem 1.25rem; }
-    .hero__stat-label { font-size: 0.6875rem; }
+    .hero__bandtail { letter-spacing: 0.14em; }
+    .hero__actions { gap: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__cue-rail i { animation: none; }
   }
 </style>
