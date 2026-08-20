@@ -93,7 +93,7 @@ async function bundle(entryHref) {
 const MIME = {
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif',
-  '.mp4': 'video/mp4', '.ico': 'image/x-icon',
+  '.mp4': 'video/mp4', '.webm': 'video/webm', '.ico': 'image/x-icon',
 };
 
 const assets = {};
@@ -133,6 +133,15 @@ for (const file of htmlFiles) {
 
   const bodyAttrs = open[1].trim();
   let body = html.slice(open.index + open[0].length).replace(/<\/body>|<\/html>/gi, '');
+
+  /* Every asset is inlined as a data URI, so a <video> carrying both a WebM
+     and an MP4 of the same clip would ship two copies of it and roughly
+     double the page. The preview only ever opens in a current browser, so
+     where a WebM exists the MP4 fallback is dropped. */
+  body = body.replace(/<video\b[^>]*>[\s\S]*?<\/video>/g, (tag) =>
+    /<source[^>]+\.webm"/.test(tag)
+      ? tag.replace(/<source[^>]+\.mp4"[^>]*>\s*/g, '')
+      : tag);
 
   // External module scripts become markers; the bundle is injected at runtime
   // so the shared one is stored once rather than per page.

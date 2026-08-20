@@ -1,7 +1,6 @@
 ---
 import Media from './Media.astro';
 import Button from './Button.astro';
-import { services } from '../data/services.js';
 
 const {
   hero,
@@ -10,13 +9,6 @@ const {
      of the first. */
   backdrop = true,
 } = Astro.props;
-
-/* The card cycles through the service list. It reads them straight off the
-   rail markup, so nothing has to be serialised into a script tag. */
-const cards = services.map((service) => ({
-  label: service.label,
-  href: `/services/${service.slug}/`,
-}));
 ---
 
 <section class="hero theme-ink" data-parallax-scope>
@@ -57,25 +49,6 @@ const cards = services.map((service) => ({
       )}
     </div>
 
-    <aside class="hero__card theme-bone" data-hero-card data-reveal="up" data-reveal-delay="940">
-      <p class="hero__card-label">Our services</p>
-      <span class="hero__card-hair" aria-hidden="true"></span>
-
-      <a class="hero__card-link" href={cards[0].href} data-hero-card-link>
-        <span class="hero__card-name" data-hero-card-name>{cards[0].label}</span>
-        <span class="hero__card-arrow" aria-hidden="true">
-          <svg viewBox="0 0 16 16" fill="none">
-            <path d="M4.5 11.5 11.5 4.5M5.6 4.5h5.9v5.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </a>
-
-      <ol class="hero__card-rail" aria-hidden="true">
-        {cards.map((card, i) => (
-          <li class="hero__card-tick" data-hero-item data-label={card.label} data-href={card.href} data-on={i === 0 ? '' : undefined}></li>
-        ))}
-      </ol>
-    </aside>
   </div>
 
   <div class="shell hero__foot">
@@ -86,67 +59,6 @@ const cards = services.map((service) => ({
   </div>
 </section>
 <span id="after-hero"></span>
-
-<script>
-  /* Cycles the service shown on the hero card. It holds still while the
-     pointer or keyboard focus is inside the card, so the link is never a
-     moving target at the moment of the click. */
-  const card = document.querySelector('[data-hero-card]');
-
-  if (card && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const items = Array.from(card.querySelectorAll('[data-hero-item]'));
-    const link = card.querySelector('[data-hero-card-link]');
-    const name = card.querySelector('[data-hero-card-name]');
-
-    if (items.length > 1 && link && name) {
-      const INTERVAL = 3600;
-      let index = 0;
-      let timer = 0;
-      let held = false;
-      let onScreen = true;
-
-      const show = (next) => {
-        const item = items[next];
-        if (!item) return;
-        index = next;
-        name.textContent = item.dataset.label || '';
-        link.setAttribute('href', item.dataset.href || '#');
-        items.forEach((tick, i) => tick.toggleAttribute('data-on', i === next));
-        name.classList.remove('is-swap');
-        void name.offsetWidth; // restart the fade
-        name.classList.add('is-swap');
-      };
-
-      const stop = () => { clearInterval(timer); timer = 0; };
-      const start = () => {
-        stop();
-        if (held || !onScreen) return;
-        timer = window.setInterval(() => show((index + 1) % items.length), INTERVAL);
-      };
-
-      const hold = (state) => { held = state; state ? stop() : start(); };
-      card.addEventListener('pointerenter', () => hold(true));
-      card.addEventListener('pointerleave', () => hold(false));
-      card.addEventListener('focusin', () => hold(true));
-      card.addEventListener('focusout', () => hold(false));
-
-      document.addEventListener('visibilitychange', () => {
-        onScreen = !document.hidden;
-        start();
-      });
-
-      /* Nothing rotates once the hero has scrolled away. */
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver((entries) => {
-          onScreen = entries[0].isIntersecting && !document.hidden;
-          start();
-        }, { threshold: 0 }).observe(card);
-      }
-
-      start();
-    }
-  }
-</script>
 
 <style>
   .hero {
@@ -239,13 +151,13 @@ const cards = services.map((service) => ({
   .hero__main {
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 20.5rem);
     align-items: end;
-    gap: clamp(2rem, 1rem + 3vw, 4.5rem);
     padding-block: clamp(2rem, 1.25rem + 2.6vw, 3.5rem) 0;
   }
 
-  .hero__copy { max-width: none; }
+  /* Bounded so the headline breaks where it is meant to and the footage to
+     the right of it stays open. */
+  .hero__copy { max-width: min(100%, 62ch); }
 
   .hero__title {
     margin-top: 1.15rem;
@@ -274,80 +186,6 @@ const cards = services.map((service) => ({
     flex-wrap: wrap;
     gap: 1.5rem;
   }
-
-  /* --- service card ------------------------------------------------------ */
-
-  .hero__card {
-    background: var(--bg);
-    color: var(--fg);
-    border-radius: var(--r-lg, 4px);
-    padding: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
-    display: grid;
-    gap: 0.9rem;
-    align-content: start;
-  }
-
-  .hero__card-label {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--fg-faint);
-  }
-
-  .hero__card-hair { display: block; height: 1px; background: var(--line); }
-
-  .hero__card-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 3.25rem;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .hero__card-name {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-stretch: calc(var(--wdth-display) * 1%);
-    font-size: var(--fs-h4);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-  }
-  .hero__card-name.is-swap { animation: card-swap 0.5s var(--ease-out) both; }
-  @keyframes card-swap {
-    from { opacity: 0; transform: translateY(0.45em); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .hero__card-arrow {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
-      border-color var(--t-fast) var(--ease-out);
-  }
-  .hero__card-arrow svg { width: 1rem; height: 1rem; }
-  .hero__card-link:hover .hero__card-arrow,
-  .hero__card-link:focus-visible .hero__card-arrow {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-fg);
-  }
-
-  .hero__card-rail { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
-  .hero__card-tick {
-    flex: 1;
-    height: 2px;
-    background: var(--line);
-    transition: background var(--t-fast) var(--ease-out);
-  }
-  .hero__card-tick[data-on] { background: var(--accent); }
 
   /* --- foot -------------------------------------------------------------- */
 
@@ -393,27 +231,6 @@ const cards = services.map((service) => ({
   /* Below the two-column breakpoint the card drops under the copy, so it
      folds into a single bar — a stacked card pushes the whole hero past the
      fold on a tablet. */
-  @media (max-width: 900px) {
-    .hero__main {
-      grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-      gap: clamp(1.5rem, 1rem + 2vw, 2.25rem);
-    }
-
-    .hero__card {
-      max-width: none;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
-      gap: 0.75rem 1.5rem;
-      padding: 1rem clamp(1rem, 0.8rem + 0.6vw, 1.5rem);
-    }
-    .hero__card-hair { display: none; }
-    .hero__card-link { grid-column: 2; grid-row: 1; min-height: 0; justify-self: end; }
-    .hero__card-name { flex: 1; }
-    .hero__card-arrow { width: 2rem; height: 2rem; }
-    .hero__card-rail { grid-column: 1 / -1; }
-  }
-
   @media (max-width: 560px) {
     .hero__bandtail { letter-spacing: 0.14em; }
     .hero__actions { gap: 1rem; }

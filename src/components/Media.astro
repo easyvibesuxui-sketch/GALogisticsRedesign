@@ -147,6 +147,12 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    /* The plate is the picture until the remote file arrives, so the alt
+       string must not paint on top of it while the image is broken — it was
+       showing through under the figure's badge. Assistive technology reads
+       the attribute, not the rendered text, so nothing is lost. */
+    color: transparent;
+    font-size: 0;
   }
 
   .media__layer img,

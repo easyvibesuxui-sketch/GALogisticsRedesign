@@ -138,6 +138,12 @@ const posterSrc = poster && fs.existsSync(path.join(MEDIA_DIR, poster)) ? `/medi
   }
   .reel__grid > span { border-left: 1px solid rgba(255, 255, 255, 0.05); }
 
+  /* No decodable footage: the run keeps its veil and column rules, over a
+     ground lifted just off black so it reads as a surface rather than as a
+     hole where a video should be. */
+  .reel.is-still .reel__frame { background: var(--ink-800); }
+  .reel.is-still .reel__veil { opacity: 0.6; }
+
   .reel__content { position: relative; z-index: 1; }
 
   /* Sections inside the reel sit on the footage rather than on their own

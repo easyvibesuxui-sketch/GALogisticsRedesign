@@ -255,7 +255,12 @@
    background without needing !important.
    -------------------------------------------------------------------------- */
 
-body .on-reel {
+/* The class is doubled to lift this above a section's own scoped background.
+   Astro compiles `.coverage { background: … }` to `.coverage[data-astro-cid-…]`,
+   which outweighs a plain `body .on-reel` — so Coverage, the pillars and the
+   closing band went on painting their own ground and hid the video the whole
+   run was supposed to sit on. */
+body .on-reel.on-reel {
   background: transparent;
   position: relative;
   z-index: 1;
@@ -263,7 +268,7 @@ body .on-reel {
 
 /* The footer is rendered by the layout, outside the page's own markup, so the
    page opts it into the reel through a class on <body>. */
-body.tail-reel .ftr {
+body.tail-reel .ftr.ftr {
   background: transparent;
   position: relative;
   z-index: 1;

@@ -385,12 +385,52 @@ function initScrollReels() {
     const endTrigger = toSelector ? document.querySelector(toSelector) : undefined;
     if (!trigger) return;
 
+    /* Visibility is wired up first and never waits on the footage.
+       Everything below this point used to sit inside a `loadedmetadata`
+       promise, so a clip that never decoded — an unsupported codec, a stalled
+       request, a blocked source — left the backdrop switched off for the
+       whole run and took the sections' ground with it. The reel now always
+       shows: with the clip when it decodes, with the veil and column rules
+       over the ink ground when it does not.
+
+       It also runs on its own, wider range than the scrub. Tying the two
+       together left the backdrop off at both boundaries — including the last
+       pixel of the page, where it visibly popped away. */
+    if (frame) {
+      /* Read from the scroll position rather than from `self.isActive`:
+         during a refresh that flag is still undefined, and
+         `classList.toggle(name, undefined)` drops the force argument and
+         flips the class instead of setting it — which switched the backdrop
+         on at the top of the page, thousands of pixels before its range. */
+      const paint = (self) => {
+        const y = self.scroll();
+        frame.classList.toggle('is-live', y >= self.start && y <= self.end);
+      };
+
+      const visibility = ScrollTrigger.create({
+        trigger,
+        endTrigger,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: paint,
+        onRefresh: paint,
+      });
+      paint(visibility);
+    }
+
+    const fail = () => reel.classList.add('is-still');
+    if (video.error) fail();
+    video.addEventListener('error', fail);
+    /* `error` on the <video> does not fire when it is the <source> children
+       that all fail to load — the last source reports instead. */
+    video.querySelectorAll('source').forEach((source) => source.addEventListener('error', () => {
+      if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) fail();
+    }));
+
+    if (reduced) return;   // hold the opening frame rather than moving
+
     const from = parseFloat(video.dataset.reelStart) || 0;
     const to = parseFloat(video.dataset.reelEnd);
-
-    const metadata = video.readyState >= 1
-      ? Promise.resolve()
-      : new Promise((resolve) => video.addEventListener('loadedmetadata', resolve, { once: true }));
 
     /* Some browsers decode nothing until a video has been played at least
        once, which would leave the section on its poster. Priming is deferred
@@ -408,48 +448,42 @@ function initScrollReels() {
       window.addEventListener(type, prime, { once: true, passive: true });
     });
 
-    metadata.then(() => {
-      const last = Number.isFinite(to) ? Math.min(to, video.duration) : video.duration;
-      const span = Math.max(0.05, last - from);
+    /* Read on every update rather than captured once: the scrub trigger is
+       live from the first frame, and simply has nothing to seek until the
+       clip reports a duration. */
+    const range = () => {
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) return null;
+      const last = Number.isFinite(to) ? Math.min(to, duration) : duration;
+      return Math.max(0.05, last - from);
+    };
 
-      const seek = (time) => {
-        if (video.readyState < 1) return;
-        if (Math.abs(video.currentTime - time) < 0.008) return;
-        video.currentTime = time;
-      };
+    const seek = (at) => {
+      const span = range();
+      if (span === null || video.readyState < 1) return;
+      const time = from + at * span;
+      if (Math.abs(video.currentTime - time) < 0.008) return;
+      video.currentTime = time;
+    };
 
-      seek(from);
-      if (reduced) return;   // hold the opening frame rather than moving
+    const head = { at: 0 };
 
-      /* Visibility runs on its own, wider range. Tying it to the scrub
-         trigger left the backdrop switched off at both boundaries — including
-         the last pixel of the page, where it visibly popped away. */
-      if (frame) {
-        ScrollTrigger.create({
-          trigger,
-          endTrigger,
-          start: 'top bottom',
-          end: 'bottom top',
-          onToggle: (self) => frame.classList.toggle('is-live', self.isActive),
-          onRefresh: (self) => frame.classList.toggle('is-live', self.isActive),
-        });
-      }
+    /* Park on the opening frame as soon as there is one to park on. */
+    video.addEventListener('loadedmetadata', () => seek(head.at), { once: true });
+    seek(0);
 
-      const head = { at: 0 };
-
-      gsap.to(head, {
-        at: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger,
-          endTrigger,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 0.35,
-          invalidateOnRefresh: true,
-        },
-        onUpdate: () => seek(from + head.at * span),
-      });
+    gsap.to(head, {
+      at: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger,
+        endTrigger,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.35,
+        invalidateOnRefresh: true,
+      },
+      onUpdate: () => seek(head.at),
     });
   });
 }
