@@ -47,20 +47,28 @@ import { contact } from '../data/site.js';
       <SectionHead
         index="02"
         eyebrow="The desks"
-        heading="Dispatchers and team leaders."
-        aside="Names and portraits below — send the client photos and we drop them straight in."
+        heading="Names and faces."
+        aside="The people who answer the phone."
       />
 
       <ul class="people__grid" data-reveal-group="110">
         {team.members.map((member) => (
           <li class="person" data-reveal="up">
             <div class="person__media">
-              <Media name={member.media} alt={member.name} ratio="3 / 4" reveal={null} />
-              <span class="person__badge">{member.role.split('·')[0].trim()}</span>
+              <Media
+                name={member.media}
+                alt={member.name}
+                ratio="3 / 4"
+                reveal={null}
+                focus={member.focus}
+              />
+              {member.role && (
+                <span class="person__badge">{member.role.split('·')[0].trim()}</span>
+              )}
             </div>
             <div class="person__body">
               <h3 class="person__name">{member.name}</h3>
-              <p class="person__role">{member.role}</p>
+              {member.role && <p class="person__role">{member.role}</p>}
               {member.note && <p class="person__note">{member.note}</p>}
             </div>
           </li>
@@ -123,9 +131,12 @@ import { contact } from '../data/site.js';
   }
   .tstruct__facts span { font-size: 0.8125rem; color: var(--fg-muted); }
 
+  /* Sized by card rather than by a fixed column count, so a roster of three
+     does not leave a hole where a fourth column would be. */
   .people__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 340px));
+    justify-content: start;
     gap: clamp(1rem, 0.6rem + 1.6vw, 2.25rem);
   }
 
@@ -186,10 +197,10 @@ import { contact } from '../data/site.js';
   }
   .tdesk__mail:hover { color: var(--brand-400); }
 
-  @media (max-width: 1100px) { .people__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 1100px) { .people__grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); } }
   @media (max-width: 900px) {
     .tstruct__grid, .tdesk__grid { grid-template-columns: 1fr; }
-    .people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; }
   }
   @media (max-width: 520px) {
     .tstruct__facts { grid-template-columns: 1fr; }

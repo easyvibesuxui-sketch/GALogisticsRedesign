@@ -227,20 +227,13 @@ export const team = {
       'Each team has its own team leader, and our dispatchers have years of experience in the industry and work closely with drivers to ensure timely deliveries.',
     ],
   },
-  /* Roster confirmed by the client. Roles other than Ani Kapanadze's are still
-     inferred — replace them with the titles used on the live site. */
+  /* Supplied by the client, with their own photographs. Roles are left empty
+     rather than guessed: inventing a job title for a named real person would
+     be a misrepresentation, not a placeholder. */
   members: [
-    {
-      name: 'Ani Kapanadze',
-      role: 'Dispatcher & Team Leader · Dispatching Course Trainer',
-      // verbatim
-      note: 'An experienced dispatcher and one of the team leaders of GA Logistics LLC.',
-      media: 'team-1',
-    },
-    { name: 'Rati Khutiashvili', role: 'Dispatcher', note: '', media: 'team-2' },
-    { name: 'Saba Tchanturidze', role: 'Dispatcher', note: '', media: 'team-3' },
-    { name: 'Ellie Khuluzauri', role: 'Dispatcher', note: '', media: 'team-4' },
-    { name: 'Lucas Miller', role: 'Dispatcher', note: '', media: 'team-5' },
+    { name: 'Tamar Gazashvili', role: '', note: '', media: 'team-1' },
+    { name: 'Tako Modebadze', role: '', note: '', media: 'team-2' },
+    { name: 'Ika Kiknadze', role: '', note: '', media: 'team-3', focus: '62% 30%' },
   ],
 };
 

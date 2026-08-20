@@ -30,6 +30,9 @@ const {
   revealFrom,
   revealDelay,
   cover = true,
+  /* Where to hold the crop when the frame's ratio differs from the file's —
+     needed whenever the subject is not in the middle. */
+  focus,
 } = Astro.props;
 
 const EXTENSIONS = ['.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg'];
@@ -66,7 +69,7 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
 
 <figure
   class:list={['media', className, { 'is-empty': !src && !videoSrc }]}
-  style={`--media-ratio: ${ratio};`}
+  style={`--media-ratio: ${ratio};${focus ? ` --media-focus: ${focus};` : ''}`}
   data-reveal={reveal || undefined}
   data-reveal-from={revealFrom}
   data-reveal-delay={revealDelay}
@@ -142,7 +145,7 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: var(--media-focus, center);
   }
 
   .media__placeholder {

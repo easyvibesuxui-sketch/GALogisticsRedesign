@@ -99,19 +99,11 @@ export const mediaSources = {
 
   /* --- team ------------------------------------------------------------- */
   'team-hero':     { query: 'logistics team office', photo: curated.convoy },
-  /* Real people. Never filled from stock — a stranger's face under someone's
-     name is a misrepresentation, not a placeholder.
-
-     To fill these: open the team page on galogisticsllc.com, right-click each
-     portrait, "Copy image address", and paste it as `url` below. The photo
-     then shows up straight away; `npm run media:fetch` pulls the files down
-     into public/media/ afterwards so the new site stops depending on the old
-     host. Attaching the image files works just as well. */
-  'team-1':        { person: 'Ani Kapanadze',      url: '', skip: 'real person — paste url or attach the photo' },
-  'team-2':        { person: 'Rati Khutiashvili',  url: '', skip: 'real person — paste url or attach the photo' },
-  'team-3':        { person: 'Saba Tchanturidze',  url: '', skip: 'real person — paste url or attach the photo' },
-  'team-4':        { person: 'Ellie Khuluzauri',   url: '', skip: 'real person — paste url or attach the photo' },
-  'team-5':        { person: 'Lucas Miller',       url: '', skip: 'real person — paste url or attach the photo' },
+  /* Real people, photographed by the client. Never stock-filled: a stranger's
+     face under someone's name is a misrepresentation, not a placeholder. */
+  'team-1':        { person: 'Tamar Gazashvili', skip: 'client photograph' },
+  'team-2':        { person: 'Tako Modebadze',   skip: 'client photograph' },
+  'team-3':        { person: 'Ika Kiknadze',     skip: 'client photograph' },
 
   /* --- gallery ---------------------------------------------------------- */
   'gallery-1':     { query: 'semi truck front grille', photo: curated.highway, url: photo(curated.highway) },
