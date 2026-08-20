@@ -375,6 +375,16 @@ function initScrollReels() {
     const video = reel.querySelector('[data-reel-video]');
     if (!video) return;
 
+    /* A reel either wraps its range or names it with selectors. The second
+       form is what lets a range run past the end of <main> and into the
+       footer. */
+    const frame = reel.querySelector('.reel__frame');
+    const fromSelector = reel.dataset.reelFrom;
+    const toSelector = reel.dataset.reelTo;
+    const trigger = fromSelector ? document.querySelector(fromSelector) : reel;
+    const endTrigger = toSelector ? document.querySelector(toSelector) : undefined;
+    if (!trigger) return;
+
     const from = parseFloat(video.dataset.reelStart) || 0;
     const to = parseFloat(video.dataset.reelEnd);
 
@@ -411,13 +421,28 @@ function initScrollReels() {
       seek(from);
       if (reduced) return;   // hold the opening frame rather than moving
 
+      /* Visibility runs on its own, wider range. Tying it to the scrub
+         trigger left the backdrop switched off at both boundaries — including
+         the last pixel of the page, where it visibly popped away. */
+      if (frame) {
+        ScrollTrigger.create({
+          trigger,
+          endTrigger,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => frame.classList.toggle('is-live', self.isActive),
+          onRefresh: (self) => frame.classList.toggle('is-live', self.isActive),
+        });
+      }
+
       const head = { at: 0 };
 
       gsap.to(head, {
         at: 1,
         ease: 'none',
         scrollTrigger: {
-          trigger: reel,
+          trigger,
+          endTrigger,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.35,

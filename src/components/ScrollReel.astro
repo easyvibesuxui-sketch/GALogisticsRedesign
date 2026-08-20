@@ -2,9 +2,18 @@
 /**
  * Scroll-driven video backdrop.
  *
- * Wraps a run of sections and puts a video behind them whose playhead is tied
- * to scroll position — it never autoplays and never plays on its own. Scrolling
- * down advances the footage; scrolling up rewinds it.
+ * Puts a video behind a run of the page whose playhead is tied to scroll
+ * position — it never autoplays and never plays on its own. Scrolling down
+ * advances the footage; scrolling up rewinds it.
+ *
+ * Two shapes:
+ *
+ *   wrap    wraps its children; the backdrop sticks inside that wrapper.
+ *   fixed   takes `from` and `to` selectors and pins a backdrop to the
+ *           viewport across that range. Needed when a run crosses a layout
+ *           boundary — the footer sits outside <main>, so no single wrapper
+ *           can hold it together with sections that are inside. Sections in
+ *           the range carry `on-reel` to drop their own ground.
  *
  * The video is decorative: the sections it sits behind carry all the meaning,
  * so it is hidden from assistive technology, and under prefers-reduced-motion
@@ -18,7 +27,12 @@ const {
   start = 0,            // trim: first second of the clip to use
   end,                  // trim: last second of the clip to use
   poster,               // optional still shown until the video is decodable
+  mode = 'wrap',        // 'wrap' | 'fixed'
+  from,                 // fixed mode: selector the range starts at
+  to,                   // fixed mode: selector the range ends at
 } = Astro.props;
+
+const fixed = mode === 'fixed';
 
 const MEDIA_DIR = path.join(process.cwd(), 'public', 'media');
 
@@ -32,7 +46,12 @@ const src = sources.length ? sources[0].src : null;
 const posterSrc = poster && fs.existsSync(path.join(MEDIA_DIR, poster)) ? `/media/${poster}` : undefined;
 ---
 
-<div class="reel" data-reel>
+<div
+  class:list={['reel', { 'reel--fixed': fixed }]}
+  data-reel
+  data-reel-from={fixed ? from : undefined}
+  data-reel-to={fixed ? to : undefined}
+>
   {src && (
     <div class="reel__stage" aria-hidden="true">
       <div class="reel__frame">
@@ -55,9 +74,11 @@ const posterSrc = poster && fs.existsSync(path.join(MEDIA_DIR, poster)) ? `/medi
     </div>
   )}
 
-  <div class="reel__content">
-    <slot />
-  </div>
+  {!fixed && (
+    <div class="reel__content">
+      <slot />
+    </div>
+  )}
 </div>
 
 <style>
@@ -122,4 +143,26 @@ const posterSrc = poster && fs.existsSync(path.join(MEDIA_DIR, poster)) ? `/medi
   /* Sections inside the reel sit on the footage rather than on their own
      ground. */
   .reel__content > :global(section) { background: transparent; }
+
+  /* --- fixed variant ------------------------------------------------------
+     The backdrop is pinned to the viewport rather than living inside a
+     wrapper, and only paints while its range is on screen. */
+  .reel--fixed { position: static; background: none; }
+  .reel--fixed .reel__stage { position: static; }
+
+  .reel--fixed .reel__frame {
+    position: fixed;
+    inset: 0;
+    height: 100svh;
+    z-index: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 520ms var(--ease-out), visibility 0s linear 520ms;
+  }
+  .reel--fixed .reel__frame.is-live {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 520ms var(--ease-out), visibility 0s;
+  }
 </style>

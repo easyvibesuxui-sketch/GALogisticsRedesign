@@ -100,7 +100,20 @@ run's scroll range onto the clip's duration. It never autoplays: scrolling down
 advances the footage, scrolling up rewinds it, and the video stays paused
 throughout. The reel ends before [03], which returns to a solid surface.
 
-`start` / `end` props trim the clip to a sub-range without touching the file.
+A second reel runs from the Coverage section to the end of the footer. That
+range crosses a layout boundary — the footer is rendered by the layout, outside
+`<main>` — so no single wrapper can hold it together with the sections above.
+It is declared with a range instead:
+
+```astro
+<ScrollReel name="reel2" mode="fixed" from="#coverage" to="#site-footer" />
+```
+
+The backdrop pins to the viewport and only paints while that range is on
+screen; sections inside it carry `on-reel` to drop their own ground, and the
+page opts the footer in with `bodyClass="tail-reel"`.
+
+`start` / `end` props trim either clip to a sub-range without touching the file.
 
 **Encoding matters more than the file size here.** Source footage usually
 carries one keyframe every few seconds, which means every seek re-decodes from

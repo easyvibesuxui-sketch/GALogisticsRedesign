@@ -249,6 +249,26 @@
    arriving panel. */
 .seam-under { padding-bottom: calc(var(--section-y) + var(--seam)); }
 
+/* --- On a fixed reel -------------------------------------------------------
+   Sections that sit over a pinned video backdrop give up their own ground and
+   lift above it. Written from `body` so it outranks each section's own scoped
+   background without needing !important.
+   -------------------------------------------------------------------------- */
+
+body .on-reel {
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+/* The footer is rendered by the layout, outside the page's own markup, so the
+   page opts it into the reel through a class on <body>. */
+body.tail-reel .ftr {
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
 /* --- Scroll progress ------------------------------------------------------ */
 
 .progress {

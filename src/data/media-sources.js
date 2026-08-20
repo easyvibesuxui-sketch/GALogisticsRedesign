@@ -134,6 +134,7 @@ export const mediaSources = {
   /* The scroll-driven backdrop behind [01] and [02]. Supplied by the client
      and re-encoded for scrubbing (see README) — never stock-filled. */
   reel:            { skip: 'client footage — public/media/reel.mp4' },
+  reel2:           { skip: 'client footage — public/media/reel2.mp4' },
 
   /* --- contact ---------------------------------------------------------- */
   'contact-map':   { query: 'aerial highway interchange', photo: curated.turbines, url: photo(curated.highway) },

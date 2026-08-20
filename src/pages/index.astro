@@ -15,7 +15,7 @@ import { home } from '../data/pages.js';
 import { gallery } from '../data/pages.js';
 ---
 
-<Base title={`${home.title} | GA Logistics LLC`} description={home.description}>
+<Base title={`${home.title} | GA Logistics LLC`} description={home.description} bodyClass="tail-reel">
   <!-- The reel opens the page: hero, ticker, [01] and [02] all sit on one
        scroll-driven video, which ends before [03]. -->
   <ScrollReel name="reel">
@@ -74,7 +74,7 @@ import { gallery } from '../data/pages.js';
   />
 
   <!-- 04 — Coverage ------------------------------------------------------- -->
-  <section class="coverage theme-ink section seam-top" data-parallax-scope>
+  <section id="coverage" class="coverage theme-ink section on-reel" data-parallax-scope>
     <div class="coverage__mark" aria-hidden="true" data-parallax data-parallax-speed="0.16">48</div>
     <div class="shell coverage__grid">
       <div class="coverage__copy">
@@ -111,7 +111,7 @@ import { gallery } from '../data/pages.js';
   />
 
   <!-- 06 — Team teaser ---------------------------------------------------- -->
-  <section class="teamteaser theme-bone section seam-top" data-parallax-scope>
+  <section class="teamteaser theme-ink section on-reel" data-parallax-scope>
     <div class="shell teamteaser__grid">
       <div class="teamteaser__media">
         <Media name="team-teaser" alt="GA Logistics dispatchers" ratio="4 / 5" parallax parallaxSpeed="0.09" revealFrom="left" />
@@ -132,7 +132,7 @@ import { gallery } from '../data/pages.js';
   </section>
 
   <!-- 07 — Gallery teaser ------------------------------------------------- -->
-  <section class="gteaser theme-ink section seam-top" data-parallax-scope>
+  <section class="gteaser theme-ink section on-reel" data-parallax-scope>
     <div class="shell">
       <SectionHead
         eyebrow={home.galleryTeaser.eyebrow}
@@ -157,6 +157,11 @@ import { gallery } from '../data/pages.js';
       </ul>
     </div>
   </section>
+
+  <!-- Coverage through the footer sits on a second scroll-driven video.
+       Declared with a range rather than as a wrapper: the footer lives outside
+       <main>, so nothing can wrap both it and the sections above. -->
+  <ScrollReel name="reel2" mode="fixed" from="#coverage" to="#site-footer" />
 
   <CtaBand
     eyebrow={home.closing.eyebrow}
