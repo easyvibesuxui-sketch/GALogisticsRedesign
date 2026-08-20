@@ -91,6 +91,7 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
           decoding="async"
           sizes={sizes}
           data-fallback={fallback}
+          style={fallback ? `background-image:url(${fallback})` : undefined}
         />
       )}
       {!src && !videoSrc && (
@@ -138,6 +139,14 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
     inset: -10% 0;
     height: 120%;
     width: 100%;
+  }
+
+  /* Remote pictures carry their local plate as a background, so the frame is
+     never a bare box of alt text while the picture is on its way. */
+  .media__layer img[data-fallback] {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .media__layer img,

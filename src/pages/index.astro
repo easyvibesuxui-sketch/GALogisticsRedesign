@@ -46,19 +46,24 @@ import { gallery } from '../data/pages.js';
       </div>
 
       <div class="intro__figure">
-        <Media
-          name={home.intro.figure.media}
-          alt="GA Logistics LLC fleet"
-          ratio="3 / 4"
-          parallax
-          parallaxSpeed="0.1"
-        >
-          <Fragment slot="caption">{home.intro.figure.caption}</Fragment>
-        </Media>
-        <div class="intro__badge" data-reveal="scale" data-reveal-delay="420">
-          <span class="intro__badge-num u-num"><span data-count="10">10</span></span>
-          <span class="intro__badge-label">years<br />on the road</span>
+        <!-- The badge is anchored to this wrapper rather than to the figure,
+             which also contains the caption: measured from the figure it drifts
+             down onto the caption, and onto the image's alt text while the
+             picture is still loading. -->
+        <div class="intro__frame">
+          <Media
+            name={home.intro.figure.media}
+            alt="GA Logistics LLC fleet"
+            ratio="3 / 4"
+            parallax
+            parallaxSpeed="0.1"
+          />
+          <div class="intro__badge" data-reveal="scale" data-reveal-delay="420">
+            <span class="intro__badge-num u-num"><span data-count="10">10</span></span>
+            <span class="intro__badge-label">years<br />on the road</span>
+          </div>
         </div>
+        <p class="intro__caption">{home.intro.figure.caption}</p>
       </div>
     </div>
   </section>
@@ -200,6 +205,24 @@ import { gallery } from '../data/pages.js';
   .intro__action { margin-top: 2.25rem; }
 
   .intro__figure { position: relative; }
+  .intro__frame { position: relative; }
+
+  /* Matches the caption Media renders for its own slot. */
+  .intro__caption {
+    margin-top: 1rem;
+    font-size: var(--fs-body-sm);
+    color: var(--fg-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+  .intro__caption::before {
+    content: '';
+    width: 1.6em;
+    height: 1px;
+    background: var(--line-strong);
+    flex: none;
+  }
 
   .intro__badge {
     position: absolute;
