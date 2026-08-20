@@ -93,7 +93,7 @@ are blocked the same way.
 |---|---|---|
 | 1 | Media | **Done.** Drawn placeholders for all 52 slots are committed, so the site renders complete with no network at all. `npm run media:fetch` swaps them for Unsplash photography — that one needs to run on your machine, since Unsplash is blocked here too. |
 | 2 | Exact copy from the live site | **Blocked.** Cannot read the pages. |
-| 3 | Real team roster | **Superseded.** The client supplied photographs and names for three people — Tamar Gazashvili, Tako Modebadze, Ika Kiknadze — and those are what `/our-team/` now shows. See the open question below about the five earlier names. |
+| 3 | Real team roster | **Settled.** The team is Tamar Gazashvili and Tako Modebadze (Dispatcher Team Leader) and Ika Kiknadze (Senior Manager) — names, titles and photographs all from the client. The five names found earlier in indexed profiles are dropped. |
 | 4 | Two service slugs | **Resolved by the client.** Parking lives at `/services/truck-trailer-parking-rental/` and is now built there; `/services/car-carrier-dispatch/` and `/services/port-to-destination-logistics/` stand as built. |
 | 5 | Logo and brand colours | **Done.** The badge you sent is in as `public/media/logo.webp` and drives the header, favicon and touch icon. `--brand-500` is now `#49ef45`, sampled from the artwork itself. |
 
@@ -129,26 +129,13 @@ carries over page for page.
    ("Ten years on the road…", "Eight services. One dispatch desk.", "Pick a
    lane.") are new writing for the new layout. Replace them with the live
    headings if the originals must be preserved word for word.
-2. **Team roster and roles — needs a decision.** Five names were confirmed
-   earlier from indexed profiles (Ani Kapanadze, Rati Khutiashvili, Saba
-   Tchanturidze, Ellie Khuluzauri, Lucas Miller). The client then supplied
-   photographs for three *different* people: Tamar Gazashvili, Tako Modebadze,
-   Ika Kiknadze. The page now shows those three, since they come with the
-   client's own photographs and are the more recent word.
-
-   Say whether the earlier five should be added back, and send job titles for
-   whoever appears. Titles are left blank rather than guessed — inventing one
-   for a named real person is a misrepresentation, not a placeholder.
-
-   Ika Kiknadze's photograph is 529x412, noticeably smaller than the other two
-   (840x1258) and soft when it fills a card. A larger original would help.
-3. **Driver / CDL jobs page.** The site advertises CDL driver jobs but no
+2. **Driver / CDL jobs page.** The site advertises CDL driver jobs but no
    dedicated URL surfaced. If one exists, it should be added.
-4. **Legal / footer text.** The footer carries a generated copyright line and a
+3. **Legal / footer text.** The footer carries a generated copyright line and a
    USDOT mention. Replace with the real footer text.
-5. **Media.** `npm run media:list` prints every image slot the design is
+4. **Media.** `npm run media:list` prints every image slot the design is
    waiting for.
-6. **Logo lockup.** The supplied badge is a mark without the company name, so
+5. **Logo lockup.** The supplied badge is a mark without the company name, so
    the header shows it beside a "GA Logistics" wordmark. If there is an
    official lockup that already contains the name, drop it in as
    `public/media/logo-full.svg` and it replaces both.

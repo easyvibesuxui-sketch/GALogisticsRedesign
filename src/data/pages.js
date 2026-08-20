@@ -227,13 +227,11 @@ export const team = {
       'Each team has its own team leader, and our dispatchers have years of experience in the industry and work closely with drivers to ensure timely deliveries.',
     ],
   },
-  /* Supplied by the client, with their own photographs. Roles are left empty
-     rather than guessed: inventing a job title for a named real person would
-     be a misrepresentation, not a placeholder. */
+  /* Names, titles and photographs all supplied by the client. */
   members: [
-    { name: 'Tamar Gazashvili', role: '', note: '', media: 'team-1' },
-    { name: 'Tako Modebadze', role: '', note: '', media: 'team-2' },
-    { name: 'Ika Kiknadze', role: '', note: '', media: 'team-3', focus: '62% 30%' },
+    { name: 'Tamar Gazashvili', role: 'Dispatcher Team Leader', note: '', media: 'team-1' },
+    { name: 'Tako Modebadze', role: 'Dispatcher Team Leader', note: '', media: 'team-2' },
+    { name: 'Ika Kiknadze', role: 'Senior Manager', note: '', media: 'team-3', focus: '62% 30%' },
   ],
 };
 

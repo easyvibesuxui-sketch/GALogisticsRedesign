@@ -571,8 +571,16 @@ function initMagnetic() {
       const rect = el.getBoundingClientRect();
       const x = event.clientX - (rect.left + rect.width / 2);
       const y = event.clientY - (rect.top + rect.height / 2);
-      gsap.to(el, { x: x * strength, y: y * strength, duration: 0.6, ease: 'power3.out' });
-      if (label) gsap.to(label, { x: x * strength * 0.4, y: y * strength * 0.4, duration: 0.6, ease: 'power3.out' });
+
+      /* Capped travel: unclamped, a wide button leans far enough to sit on top
+         of the control beside it. */
+      const limit = Math.min(18, rect.height * 0.34);
+      const pull = (value) => gsap.utils.clamp(-limit, limit, value * strength);
+
+      gsap.to(el, { x: pull(x), y: pull(y), duration: 0.6, ease: 'power3.out' });
+      if (label) {
+        gsap.to(label, { x: pull(x) * 0.4, y: pull(y) * 0.4, duration: 0.6, ease: 'power3.out' });
+      }
     };
 
     const reset = () => {

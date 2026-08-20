@@ -59,7 +59,8 @@ const { eyebrow, heading, body, actions = [] } = Astro.props;
   }
   .cta__body { color: var(--fg-muted); max-width: 46ch; }
 
-  .cta__actions { display: flex; flex-wrap: wrap; gap: 0.85rem; justify-content: center; margin-top: 0.75rem; }
+  /* Enough gap that a magnetic lean never closes the space between them. */
+  .cta__actions { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 0.75rem; }
 
   .cta__direct {
     margin-top: 1.5rem;

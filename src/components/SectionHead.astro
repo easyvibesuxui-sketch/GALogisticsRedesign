@@ -1,5 +1,19 @@
 ---
-const { index, eyebrow, heading, aside, align = 'end', id } = Astro.props;
+import Button from './Button.astro';
+
+const {
+  index,
+  eyebrow,
+  heading,
+  aside,
+  align = 'end',
+  id,
+  /* An action belongs under the heading, on the same left edge. Sitting it in
+     the aside column leaves it aligned to nothing, with dead space either
+     side. */
+  action,
+  actionVariant = 'ghost',
+} = Astro.props;
 ---
 
 <header class="sec-head" style={`align-items:${align};`} id={id}>
@@ -7,6 +21,11 @@ const { index, eyebrow, heading, aside, align = 'end', id } = Astro.props;
     {index && <span class="sec-head__index" data-reveal="fade">[{index}]</span>}
     {eyebrow && <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">{eyebrow}</p>}
     {heading && <h2 data-split data-reveal-delay="120">{heading}</h2>}
+    {action && (
+      <div class="sec-head__action" data-reveal="up" data-reveal-delay="300">
+        <Button href={action.href} label={action.label} variant={actionVariant} />
+      </div>
+    )}
   </div>
   {(aside || Astro.slots.has('default')) && (
     <div class="sec-head__aside" data-reveal="blur" data-reveal-delay="260">

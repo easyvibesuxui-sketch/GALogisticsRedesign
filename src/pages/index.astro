@@ -142,9 +142,9 @@ import { gallery } from '../data/pages.js';
         index={home.galleryTeaser.index}
         eyebrow={home.galleryTeaser.eyebrow}
         heading={home.galleryTeaser.heading}
-      >
-        <Button href={home.galleryTeaser.action.href} label={home.galleryTeaser.action.label} variant="ghost" />
-      </SectionHead>
+        action={home.galleryTeaser.action}
+        actionVariant="ghost"
+      />
 
       <ul class="gteaser__grid">
         {gallery.items.slice(0, 5).map((item, i) => (
