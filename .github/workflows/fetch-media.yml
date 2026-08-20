@@ -1,0 +1,56 @@
+# Downloads the stock photography into public/media and commits it.
+#
+# Run once, by hand. The images then live in the repository as ordinary
+# files: builds stay fast and deterministic, and nothing on the published
+# site depends on a third-party host still serving a hotlink.
+#
+# scripts/fetch-media.mjs leaves any file a human supplied alone — only the
+# generated placeholders listed in public/media/.generated.json are replaced —
+# so re-running it will never overwrite the client's own photography.
+name: Fetch media
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Re-download slots that already have a photo
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # UNSPLASH_ACCESS_KEY is optional: with it every slot gets its own
+      # search result, without it the script uses its curated set.
+      - run: npm run media:fetch ${{ inputs.force && '-- --force' || '' }}
+        env:
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+      - name: Commit whatever landed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/media
+          if git diff --cached --quiet; then
+            echo "no new media"
+            exit 0
+          fi
+          git commit -m "Fill the image slots with photography
+
+          Downloaded by the fetch-media workflow: the runner can reach the
+          photo host, so the files land in the repository once instead of the
+          published pages hotlinking a third party on every visit."
+          git push
