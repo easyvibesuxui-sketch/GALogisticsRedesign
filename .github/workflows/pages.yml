@@ -26,14 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # `enablement` turns Pages on for the repository if it is not already,
-      # so the first run needs no visit to the settings screen. It also
-      # reports the sub-path the site will be served from.
-      - id: pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -41,7 +33,11 @@ jobs:
 
       - run: npm ci
       - run: npm run build
-      - run: node scripts/rebase.mjs "${{ steps.pages.outputs.base_path }}"
+      # Pages serves a project repository from /<repo>/. Taken from the repo
+      # name rather than from actions/configure-pages: that action wants to
+      # create the Pages site, which the workflow token is not allowed to do,
+      # and it failed the whole job over a value we already know.
+      - run: node scripts/rebase.mjs "/${{ github.event.repository.name }}"
 
       - uses: actions/upload-pages-artifact@v3
         with:
