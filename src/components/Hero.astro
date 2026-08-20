@@ -3,19 +3,27 @@ import Media from './Media.astro';
 import Button from './Button.astro';
 import { stats } from '../data/site.js';
 
-const { hero } = Astro.props;
+const {
+  hero,
+  /* Off when the hero sits on a scroll reel: the reel supplies the footage,
+     the veil and the column rules, and a second set of each would sit on top
+     of the first. */
+  backdrop = true,
+} = Astro.props;
 ---
 
 <section class="hero theme-ink" data-parallax-scope>
-  <div class="hero__bg">
-    <div class="hero__media" data-hero-media>
-      <Media name={hero.media} alt="" ratio="16 / 9" reveal={null} loading="eager" class="hero__mediaslot" />
+  {backdrop && (
+    <div class="hero__bg">
+      <div class="hero__media" data-hero-media>
+        <Media name={hero.media} alt="" ratio="16 / 9" reveal={null} loading="eager" class="hero__mediaslot" />
+      </div>
+      <div class="hero__veil" data-hero-veil></div>
+      <div class="hero__lines" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
     </div>
-    <div class="hero__veil" data-hero-veil></div>
-    <div class="hero__lines" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-  </div>
+  )}
 
   <div class="shell hero__inner">
     <div class="hero__copy" data-hero-copy>

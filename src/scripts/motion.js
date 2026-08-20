@@ -235,28 +235,33 @@ function initParallax() {
    -------------------------------------------------------------------------- */
 
 function initHero() {
+  if (reduced) return;
+
+  /* The hero may have no backdrop of its own — on the home page a scroll reel
+     supplies it — so each piece is driven only if it is there. */
   const media = document.querySelector('[data-hero-media]');
-  if (!media || reduced) return;
 
-  gsap.to(media, {
-    scale: 1.12,
-    yPercent: 8,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: media.closest('section') || media,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    },
-  });
-
-  const veil = document.querySelector('[data-hero-veil]');
-  if (veil) {
-    gsap.to(veil, {
-      opacity: 0.86,
+  if (media) {
+    gsap.to(media, {
+      scale: 1.12,
+      yPercent: 8,
       ease: 'none',
-      scrollTrigger: { trigger: media, start: 'top top', end: 'bottom top', scrub: true },
+      scrollTrigger: {
+        trigger: media.closest('section') || media,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
     });
+
+    const veil = document.querySelector('[data-hero-veil]');
+    if (veil) {
+      gsap.to(veil, {
+        opacity: 0.86,
+        ease: 'none',
+        scrollTrigger: { trigger: media, start: 'top top', end: 'bottom top', scrub: true },
+      });
+    }
   }
 
   const copy = document.querySelector('[data-hero-copy]');
@@ -292,7 +297,11 @@ function initCounters() {
       value: end,
       duration: 2.1,
       ease: 'power2.out',
-      scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+      /* Fires the moment any of the number is on screen. At `top 88%` the
+         hero's stat strip — which sits at about 92% of the viewport on first
+         paint — never qualified, so those figures sat at zero until the
+         visitor scrolled. */
+      scrollTrigger: { trigger: el, start: 'top bottom', once: true },
       onUpdate: () => { el.textContent = counter.value.toFixed(decimals); },
     });
   });

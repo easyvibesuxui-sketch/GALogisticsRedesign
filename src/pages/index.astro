@@ -16,7 +16,10 @@ import { gallery } from '../data/pages.js';
 ---
 
 <Base title={`${home.title} | GA Logistics LLC`} description={home.description}>
-  <Hero hero={home.hero} />
+  <!-- The reel opens the page: hero, ticker, [01] and [02] all sit on one
+       scroll-driven video, which ends before [03]. -->
+  <ScrollReel name="reel">
+  <Hero hero={home.hero} backdrop={false} />
 
   <!-- Ticker: two lanes running against each other, nudged by scroll velocity -->
   <section class="ticker theme-ink" aria-hidden="true">
@@ -24,8 +27,6 @@ import { gallery } from '../data/pages.js';
     <Marquee items={home.ticker} speed={0.35} direction="right" variant="outline" />
   </section>
 
-  <!-- 01 + 02 sit on one scroll-driven video; it ends before [03] ---------- -->
-  <ScrollReel name="reel">
   <!-- 01 — Who we are ---------------------------------------------------- -->
   <section class="intro theme-ink section" data-parallax-scope>
     <div class="shell intro__grid">
