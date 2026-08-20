@@ -114,7 +114,7 @@ export const services = [
     media: { hero: 'trailer-hero', gallery: ['trailer-1', 'trailer-2'] },
   },
   {
-    slug: 'parking',
+    slug: 'truck-trailer-parking-rental',
     index: '05',
     label: 'Cargo Pick-up & Parking',
     title: 'Cargo Pick-up & Trailer Parking',

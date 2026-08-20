@@ -65,7 +65,7 @@ export const nav = [
       { label: 'Dispatching', href: '/services/dispatching/' },
       { label: 'Port-to-Destination Logistics', href: '/services/port-to-destination-logistics/' },
       { label: 'Trailer Rental', href: '/services/trailer-rental/' },
-      { label: 'Cargo Pick-up & Parking', href: '/services/parking/' },
+      { label: 'Cargo Pick-up & Parking', href: '/services/truck-trailer-parking-rental/' },
       { label: 'Car Carrier Dispatch', href: '/services/car-carrier-dispatch/' },
       { label: 'Shop', href: '/services/shop/' },
       { label: 'Truck Dispatching Courses', href: '/services/truck-dispatching-courses/' },
