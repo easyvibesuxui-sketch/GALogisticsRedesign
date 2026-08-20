@@ -1,0 +1,58 @@
+# Builds the site and publishes it to GitHub Pages.
+#
+# Pages serves this repository from /GALogisticsRedesign/, so the build is
+# followed by a pass that moves the site's root-absolute links under that
+# path. Nothing in src/ knows about Pages.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [claude/website-redesign-scroll-effects-uhw89w]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one halfway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # `enablement` turns Pages on for the repository if it is not already,
+      # so the first run needs no visit to the settings screen. It also
+      # reports the sub-path the site will be served from.
+      - id: pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/rebase.mjs "${{ steps.pages.outputs.base_path }}"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
