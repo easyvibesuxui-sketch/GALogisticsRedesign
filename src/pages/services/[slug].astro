@@ -39,7 +39,6 @@ const { service, next, others } = Astro.props;
   <section class="sintro theme-ink section" data-parallax-scope>
     <div class="shell sintro__grid">
       <div class="sintro__copy">
-        <span class="sec-head__index" data-reveal="fade">[{service.index}]</span>
         <div class="sintro__body">
           {service.intro.map((paragraph, i) => (
             <p class="sintro__p" data-split data-reveal-delay={i * 120}>{paragraph}</p>
@@ -68,11 +67,10 @@ const { service, next, others } = Astro.props;
   <!-- Points --------------------------------------------------------------- -->
   <section class="points theme-bone section seam-top">
     <div class="shell">
-      <SectionHead index="02" eyebrow="What it includes" heading={`Inside ${service.label.toLowerCase()}.`} />
+      <SectionHead eyebrow="What it includes" heading={`Inside ${service.label.toLowerCase()}.`} />
       <ol class="points__grid" data-reveal-group="100">
         {service.points.map((point, i) => (
           <li class="point" data-reveal="up">
-            <span class="point__n u-num">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="point__title">{point.title}</h3>
             <p class="point__text">{point.text}</p>
           </li>
@@ -92,12 +90,11 @@ const { service, next, others } = Astro.props;
   <!-- Other services -------------------------------------------------------- -->
   <section class="others theme-ink section" style="padding-top:0">
     <div class="shell">
-      <SectionHead index="03" eyebrow="Keep looking" heading="Other services." />
+      <SectionHead eyebrow="Keep looking" heading="Other services." />
       <ul class="others__list">
         {others.map((item) => (
           <li>
             <a class="others__link" href={`/services/${item.slug}/`}>
-              <span class="others__n u-num">{item.index}</span>
               <span class="others__title">{item.title}</span>
               <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 13L13 3M13 3H5M13 3v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -191,7 +188,6 @@ const { service, next, others } = Astro.props;
     gap: clamp(1.5rem, 1rem + 2vw, 3rem);
   }
   .point { display: grid; gap: 0.75rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--line-strong); }
-  .point__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--accent); }
   .point__title { font-size: var(--fs-h4); }
   .point__text { color: var(--fg-muted); font-size: var(--fs-body-sm); }
 
@@ -214,7 +210,6 @@ const { service, next, others } = Astro.props;
     transition: padding-inline 460ms var(--ease-mask);
   }
   .others__link:hover { padding-inline: 0.75rem; }
-  .others__n { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--fg-faint); }
   .others__title { font-size: var(--fs-h4); font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; }
   .others__link svg { width: 14px; height: 14px; opacity: 0.5; transition: all 320ms var(--ease-out); }
   .others__link:hover svg { opacity: 1; transform: translate(2px, -2px); color: var(--brand-400); }

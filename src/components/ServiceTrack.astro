@@ -6,15 +6,11 @@ import { services } from '../data/services.js';
 <section class="track theme-ink" data-pin-track aria-label="Our services">
   <div class="track__head shell">
     <div>
-      <span class="sec-head__index" data-reveal="fade">[02]</span>
       <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">Our services</p>
       <h2 class="track__title" data-split data-reveal-delay="120">Eight services. One dispatch desk.</h2>
     </div>
     <div class="track__meta">
       <p class="u-body">Keep scrolling — the whole operation moves sideways.</p>
-      <p class="track__count" aria-hidden="true">
-        <span data-pin-index>01</span><span class="track__count-sep">/</span><span>{String(services.length).padStart(2, '0')}</span>
-      </p>
       <div class="track__progress" aria-hidden="true"><i data-pin-progress></i></div>
     </div>
   </div>
@@ -24,7 +20,6 @@ import { services } from '../data/services.js';
       {services.map((service) => (
         <li class="tcard">
           <a class="tcard__link" href={`/services/${service.slug}/`}>
-            <span class="tcard__index">{service.index}</span>
             <div class="tcard__media">
               <Media name={service.media.hero} alt={service.title} ratio="5 / 4" reveal={null} />
             </div>
@@ -78,21 +73,6 @@ import { services } from '../data/services.js';
   }
   .track__meta { max-width: 30ch; padding-bottom: 0.25rem; }
 
-  .track__count {
-    margin-top: 0.85rem;
-    display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.125rem;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-  }
-  .track__count-sep { color: var(--fg-faint); }
-  .track__count span:last-child { color: var(--fg-faint); }
-  .track__count [data-pin-index] { color: var(--accent); }
-
   .track__progress {
     margin-top: 0.85rem;
     height: 2px;
@@ -143,21 +123,6 @@ import { services } from '../data/services.js';
     transition: border-color 420ms var(--ease-out), transform 620ms var(--ease-out);
   }
   .tcard__link:hover { border-color: var(--line-strong); transform: translateY(-6px); }
-
-  .tcard__index {
-    position: absolute;
-    top: 1rem;
-    left: 1.15rem;
-    z-index: 2;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(8, 9, 11, 0.55);
-    backdrop-filter: blur(6px);
-    padding: 0.35em 0.7em;
-    border-radius: var(--radius-pill);
-  }
 
   /* The media takes whatever height the tallest copy block leaves over. */
   .tcard__media { overflow: hidden; min-height: 0; }

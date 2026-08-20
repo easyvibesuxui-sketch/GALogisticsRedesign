@@ -27,7 +27,6 @@ import { services, serviceGroups } from '../data/services.js';
   <section class="slist theme-ink section" data-service-list>
     <div class="shell">
       <SectionHead
-        index="01"
         eyebrow="The full list"
         heading="Pick a lane."
         aside="Every service below is run in-house — the same company answers for the truck, the trailer and the paperwork."
@@ -37,7 +36,6 @@ import { services, serviceGroups } from '../data/services.js';
         {services.map((service) => (
           <li class="srow" data-preview={service.slug}>
             <a class="srow__link" href={`/services/${service.slug}/`}>
-              <span class="srow__n u-num">{service.index}</span>
               <span class="srow__title">{service.title}</span>
               <span class="srow__summary">{service.summary}</span>
               <span class="srow__arrow" aria-hidden="true">
@@ -63,7 +61,7 @@ import { services, serviceGroups } from '../data/services.js';
   <!-- Card grid ----------------------------------------------------------- -->
   <section class="sgrid theme-bone section seam-top">
     <div class="shell">
-      <SectionHead index="02" eyebrow="At a glance" heading="Eight ways we move freight." />
+      <SectionHead eyebrow="At a glance" heading="Eight ways we move freight." />
       <ul class="sgrid__grid" data-reveal-group="90">
         {services.map((service) => (
           <li class="card" data-reveal="up">
@@ -71,7 +69,7 @@ import { services, serviceGroups } from '../data/services.js';
               <Media name={service.media.hero} alt={service.title} ratio="16 / 10" reveal={null} />
             </div>
             <div class="card__body">
-              <p class="sgrid__eyebrow">{service.index} — {service.eyebrow}</p>
+              <p class="sgrid__eyebrow">{service.eyebrow}</p>
               <h3 class="card__title">{service.title}</h3>
               <p class="card__text">{service.summary}</p>
               <div class="card__foot">
@@ -133,15 +131,13 @@ import { services, serviceGroups } from '../data/services.js';
 
   .srow__link {
     display: grid;
-    grid-template-columns: 4rem minmax(0, 1.05fr) minmax(0, 1.15fr) 3rem;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr) 3rem;
     align-items: center;
     gap: clamp(1rem, 0.5rem + 1.6vw, 2.5rem);
     padding: clamp(1.4rem, 1rem + 1.4vw, 2.4rem) 0;
     transition: padding 520ms var(--ease-mask), color 320ms var(--ease-out);
   }
   .srow__link:hover { padding-inline: clamp(0.5rem, 1.2vw, 1.5rem); }
-
-  .srow__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--fg-faint); }
 
   .srow__title {
     font-family: var(--font-display);
@@ -196,7 +192,7 @@ import { services, serviceGroups } from '../data/services.js';
   .slist__preview-item :global(.media__frame) { height: 100%; aspect-ratio: auto; }
 
   @media (max-width: 900px) {
-    .srow__link { grid-template-columns: 3rem 1fr 2.5rem; }
+    .srow__link { grid-template-columns: 1fr 2.5rem; }
     .srow__summary { display: none; }
     .slist__preview { display: none; }
   }

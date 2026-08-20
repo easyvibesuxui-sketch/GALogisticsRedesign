@@ -439,8 +439,6 @@ function initPinnedTracks() {
     if (!lane) return;
 
     const progressBar = section.querySelector('[data-pin-progress]');
-    const indexOut = section.querySelector('[data-pin-index]');
-    const stage = section.querySelector('[data-pin-stage]') || section;
     const cards = [...lane.children];
 
     if (reduced || window.innerWidth < 900) {
@@ -448,7 +446,18 @@ function initPinnedTracks() {
       return;
     }
 
-    const getDistance = () => Math.max(0, lane.scrollWidth - window.innerWidth);
+    /* Measured from the last card's resting position rather than scrollWidth:
+       a grid or flex container leaves its trailing padding out of scrollWidth,
+       so the lane stopped one gutter short and the last card sat flush against
+       the edge of the screen, looking cut off. */
+    const getDistance = () => {
+      const last = cards[cards.length - 1];
+      if (!last) return 0;
+      const applied = Number(gsap.getProperty(lane, 'x')) || 0;
+      const restingRight = last.getBoundingClientRect().right - applied;
+      const trail = parseFloat(getComputedStyle(lane).paddingRight) || 0;
+      return Math.max(0, restingRight + trail - window.innerWidth);
+    };
 
     /* Fraction of the pinned scroll spent holding still at each end. Without
        it the page stops scrolling and starts moving sideways in the same
@@ -473,22 +482,6 @@ function initPinnedTracks() {
           );
 
           if (progressBar) gsap.set(progressBar, { scaleX: travel });
-
-          if (indexOut && cards.length) {
-            /* Report the card currently at the left edge of the stage rather
-               than a number derived from progress — it stays true whatever the
-               viewport does to the card width. The lane itself is the thing
-               being moved, so its own box cannot be the reference. */
-            const edge = stage.getBoundingClientRect().left;
-            let current = 0;
-            let nearest = Infinity;
-            cards.forEach((card, i) => {
-              const gap = Math.abs(card.getBoundingClientRect().left - edge);
-              if (gap < nearest) { nearest = gap; current = i; }
-            });
-            const label = String(current + 1).padStart(2, '0');
-            if (indexOut.textContent !== label) indexOut.textContent = label;
-          }
         },
       },
     });

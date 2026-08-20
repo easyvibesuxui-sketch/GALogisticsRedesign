@@ -2,19 +2,18 @@
 import Media from './Media.astro';
 import SectionHead from './SectionHead.astro';
 
-const { index, eyebrow, heading, items = [] } = Astro.props;
+const { eyebrow, heading, items = [] } = Astro.props;
 ---
 
 <section class="pillars theme-ink section">
   <div class="shell">
-    <SectionHead index={index} eyebrow={eyebrow} heading={heading} />
+    <SectionHead eyebrow={eyebrow} heading={heading} />
 
     <div class="pillars__stack">
       {items.map((item, i) => (
         <article class="pillar" data-stick-scale style={`--i:${i}; z-index:${i + 1}`}>
           <div class="pillar__grid">
             <div class="pillar__copy">
-              <span class="pillar__n u-num">{item.n}</span>
               <h3 class="pillar__title" data-split>{item.title}</h3>
               <p class="pillar__text" data-reveal="up" data-reveal-delay="180">{item.text}</p>
             </div>
@@ -52,13 +51,6 @@ const { index, eyebrow, heading, items = [] } = Astro.props;
   }
 
   .pillar__copy { display: grid; gap: 1rem; align-content: center; }
-
-  .pillar__n {
-    font-size: 0.8125rem;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    font-family: var(--font-mono);
-  }
 
   .pillar__title { font-size: var(--fs-h3); max-width: 14ch; }
   .pillar__text { color: var(--fg-muted); max-width: 46ch; }

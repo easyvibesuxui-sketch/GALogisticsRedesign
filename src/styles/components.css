@@ -115,12 +115,6 @@
   grid-column: 9 / span 4;
   padding-bottom: 0.6rem;
 }
-.sec-head__index {
-  font-family: var(--font-mono);
-  font-size: var(--fs-eyebrow);
-  color: var(--fg-faint);
-  letter-spacing: 0.08em;
-}
 .sec-head h2 { margin-top: 1.1rem; }
 
 @media (max-width: 900px) {

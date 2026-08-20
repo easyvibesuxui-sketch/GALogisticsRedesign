@@ -37,7 +37,6 @@ import { about, home } from '../data/pages.js';
       </div>
 
       <div class="story__copy">
-        <span class="sec-head__index" data-reveal="fade">[{about.story.index}]</span>
         <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">
           {about.story.eyebrow}
         </p>
@@ -56,7 +55,6 @@ import { about, home } from '../data/pages.js';
       <ol class="values__list">
         {about.values.items.map((item, i) => (
           <li class="value" data-reveal="up" data-reveal-delay={i * 130}>
-            <span class="value__n u-num">{item.n}</span>
             <h3 class="value__title">{item.title}</h3>
             <p class="value__text">{item.text}</p>
             <span class="value__rule" data-reveal="rule" data-reveal-delay={i * 130 + 280}></span>
@@ -66,7 +64,7 @@ import { about, home } from '../data/pages.js';
     </div>
   </section>
 
-  <StatBand index="03" eyebrow="By the numbers" heading="What ten years builds." />
+  <StatBand eyebrow="By the numbers" heading="What ten years builds." />
 
   <!-- 03 — Fleet ---------------------------------------------------------- -->
   <section class="fleet theme-ink section" data-parallax-scope>
@@ -97,7 +95,6 @@ import { about, home } from '../data/pages.js';
   <section class="care theme-bone section seam-top">
     <div class="shell care__grid">
       <div>
-        <span class="sec-head__index" data-reveal="fade">[{about.care.index}]</span>
         <p class="u-eyebrow" data-reveal="up" data-reveal-delay="60" style="margin-top:.75rem">{about.care.eyebrow}</p>
         <h2 class="care__title" data-split data-reveal-delay="120">{about.care.heading}</h2>
       </div>
@@ -145,7 +142,6 @@ import { about, home } from '../data/pages.js';
     height: 1px;
     background: var(--line-strong);
   }
-  .value__n { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--accent); }
   .value__title { font-size: var(--fs-h4); }
   .value__text { color: var(--fg-muted); font-size: var(--fs-body-sm); }
 

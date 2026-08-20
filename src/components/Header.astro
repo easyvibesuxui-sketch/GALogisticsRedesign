@@ -39,7 +39,6 @@ const isActive = (href) =>
                     {item.children.map((child, i) => (
                       <li style={`--i:${i}`}>
                         <a href={child.href} class="mega__link">
-                          <span class="mega__num">{String(i + 1).padStart(2, '0')}</span>
                           <span class="mega__label">{child.label}</span>
                           <svg class="mega__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                             <path d="M3 13L13 3M13 3H5M13 3v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -79,7 +78,6 @@ const isActive = (href) =>
         {nav.map((item, i) => (
           <li class="menu__row" style={`--i:${i}`}>
             <a href={item.href} class="menu__link">
-              <span class="menu__num">{String(i + 1).padStart(2, '0')}</span>
               <span class="menu__label">{item.label}</span>
             </a>
             {item.children && (
@@ -242,7 +240,6 @@ const isActive = (href) =>
     background: rgba(255, 255, 255, 0.06);
     color: #fff;
   }
-  .mega__num { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--fg-faint); }
   .mega__arrow { width: 13px; height: 13px; opacity: 0; transform: translate(-4px, 4px); transition: all 300ms var(--ease-out); }
   .mega__link:hover .mega__arrow { opacity: 1; transform: none; }
 
@@ -346,7 +343,6 @@ const isActive = (href) =>
     letter-spacing: -0.04em;
     line-height: 1.05;
   }
-  .menu__num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-faint); }
   .menu__sub { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; padding: 0 0 1.25rem 2.5rem; }
   .menu__sub a { font-size: 0.875rem; color: rgba(242, 243, 244, 0.6); }
   .menu__sub a:hover { color: var(--brand-400); }

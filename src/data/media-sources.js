@@ -35,14 +35,29 @@
 export const photo = (id) => `https://unsplash.com/photos/${id}/download?w=1920`;
 
 export const curated = {
+  /* trucking */
   road: '5M_RGvhvQ_g',       // white semi-truck parked on asphalt, blue sky
   highway: 'dlyz37qqHfM',    // red semi truck driving down a highway
   convoy: 'e3Lb6KlDXgw',     // semi-trucks hauling an oversized load
   country: 'H2UzCyX32p4',    // red semi truck on a country road
   desert: 'Rhwj3CPwc6o',     // semi truck on a desert highway
   turbines: '9lNE4qc6LLc',   // green semi-truck, wind turbines behind
-};
 
+  /* yards, docks and ports */
+  dock: '2vM-hJbDwME',       // truck parked in front of a loading dock
+  dockWide: 'dGUbqTfP2xE',   // truck at a loading dock
+  port: 'ip0yX8W1veE',       // busy shipping port, cranes and containers
+  crane: 'mpgeKYesx8w',      // crane loading containers onto a ship
+
+  /* workshop */
+  shop: 'P1itawXTCgg',       // mechanic working inside a garage
+
+  /* dispatch desks */
+  desk: 'WbLJd4M88I8',       // working at a multi-monitor setup
+  deskPair: '6pMI--IXV-8',   // desk with two monitors and a chair
+  deskLaptop: '0Z6gQ0p9hVI', // desk with two monitors and a laptop
+  deskDark: 'rtY0WbkRdPk',   // dark office desk with a monitor
+};
 /* slot → { query, photo }
    `query`  drives the API-key path.
    `photo`  is the no-key fallback id. */
@@ -50,16 +65,16 @@ export const mediaSources = {
   /* --- home ------------------------------------------------------------- */
   hero:            { query: 'semi truck highway dusk', photo: curated.highway, url: photo(curated.highway) },
   intro:           { query: 'truck fleet parked lot', photo: curated.road, url: photo(curated.road) },
-  'team-teaser':   { query: 'logistics dispatcher office desk', photo: curated.country },
+  'team-teaser':   { query: 'logistics dispatcher office desk', photo: curated.country, url: photo(curated.deskPair) },
   'pillar-1':      { query: 'semi truck fleet lineup', photo: curated.road, url: photo(curated.road) },
-  'pillar-2':      { query: 'dispatcher headset office', photo: curated.highway },
-  'pillar-3':      { query: 'warehouse loading dock', photo: curated.convoy },
-  'pillar-4':      { query: 'truck driver cabin', photo: curated.desert },
+  'pillar-2':      { query: 'dispatcher headset office', photo: curated.highway, url: photo(curated.desk) },
+  'pillar-3':      { query: 'warehouse loading dock', photo: curated.convoy, url: photo(curated.dock) },
+  'pillar-4':      { query: 'truck driver cabin', photo: curated.desert, url: photo(curated.desert) },
   og:              { query: 'semi truck highway', photo: curated.highway, url: photo(curated.highway) },
 
   /* --- about ------------------------------------------------------------ */
   'about-hero':    { query: 'trucking company yard', photo: curated.turbines, url: photo(curated.turbines) },
-  'about-story':   { query: 'truck driver portrait', photo: curated.country },
+  'about-story':   { query: 'truck driver portrait', photo: curated.country, url: photo(curated.country) },
   'about-fleet':   { query: 'semi trucks parked fleet', photo: curated.road, url: photo(curated.road) },
 
   /* --- services --------------------------------------------------------- */
@@ -69,36 +84,36 @@ export const mediaSources = {
   'transportation-1':       { query: 'truck driving mountain road', photo: curated.desert, url: photo(curated.desert) },
   'transportation-2':       { query: 'trucks on freeway aerial', photo: curated.turbines, url: photo(curated.turbines) },
 
-  'dispatching-hero':       { query: 'dispatch office monitors logistics', photo: curated.road },
-  'dispatching-1':          { query: 'logistics control room', photo: curated.country },
-  'dispatching-2':          { query: 'route planning map screen', photo: curated.highway },
+  'dispatching-hero':       { query: 'dispatch office monitors logistics', photo: curated.road, url: photo(curated.desk) },
+  'dispatching-1':          { query: 'logistics control room', photo: curated.country, url: photo(curated.deskDark) },
+  'dispatching-2':          { query: 'route planning map screen', photo: curated.highway, url: photo(curated.deskLaptop) },
 
-  'port-hero':              { query: 'container port terminal crane', photo: curated.convoy },
-  'port-1':                 { query: 'shipping containers stacked', photo: curated.road },
-  'port-2':                 { query: 'container truck drayage', photo: curated.highway },
+  'port-hero':              { query: 'container port terminal crane', photo: curated.convoy, url: photo(curated.port) },
+  'port-1':                 { query: 'shipping containers stacked', photo: curated.road, url: photo(curated.crane) },
+  'port-2':                 { query: 'container truck drayage', photo: curated.highway, url: photo(curated.dockWide) },
 
   'trailer-hero':           { query: 'dry van trailer', photo: curated.road, url: photo(curated.road) },
-  'trailer-1':              { query: 'flatbed trailer cargo', photo: curated.convoy },
-  'trailer-2':              { query: 'refrigerated trailer reefer', photo: curated.turbines },
+  'trailer-1':              { query: 'flatbed trailer cargo', photo: curated.convoy, url: photo(curated.convoy) },
+  'trailer-2':              { query: 'refrigerated trailer reefer', photo: curated.turbines, url: photo(curated.dock) },
 
-  'parking-hero':           { query: 'truck stop parking lot night', photo: curated.desert },
-  'parking-1':              { query: 'trucks parked yard', photo: curated.road },
-  'parking-2':              { query: 'trailer yard aerial', photo: curated.country },
+  'parking-hero':           { query: 'truck stop parking lot night', photo: curated.desert, url: photo(curated.dockWide) },
+  'parking-1':              { query: 'trucks parked yard', photo: curated.road, url: photo(curated.road) },
+  'parking-2':              { query: 'trailer yard aerial', photo: curated.country, url: photo(curated.country) },
 
   'carcarrier-hero':        { query: 'car carrier trailer transport', photo: curated.convoy, url: photo(curated.convoy) },
-  'carcarrier-1':           { query: 'auto transport truck', photo: curated.highway },
-  'carcarrier-2':           { query: 'cars loaded on trailer', photo: curated.road },
+  'carcarrier-1':           { query: 'auto transport truck', photo: curated.highway, url: photo(curated.highway) },
+  'carcarrier-2':           { query: 'cars loaded on trailer', photo: curated.road, url: photo(curated.road) },
 
-  'shop-hero':              { query: 'truck repair workshop mechanic', photo: curated.country },
-  'shop-1':                 { query: 'diesel mechanic tools', photo: curated.desert },
-  'shop-2':                 { query: 'truck maintenance garage', photo: curated.turbines },
+  'shop-hero':              { query: 'truck repair workshop mechanic', photo: curated.country, url: photo(curated.shop) },
+  'shop-1':                 { query: 'diesel mechanic tools', photo: curated.desert, url: photo(curated.shop) },
+  'shop-2':                 { query: 'truck maintenance garage', photo: curated.turbines, url: photo(curated.road) },
 
-  'courses-hero':           { query: 'training classroom laptop office', photo: curated.highway },
-  'courses-1':              { query: 'people learning office training', photo: curated.road },
-  'courses-2':              { query: 'logistics team meeting', photo: curated.country },
+  'courses-hero':           { query: 'training classroom laptop office', photo: curated.highway, url: photo(curated.desk) },
+  'courses-1':              { query: 'people learning office training', photo: curated.road, url: photo(curated.deskLaptop) },
+  'courses-2':              { query: 'logistics team meeting', photo: curated.country, url: photo(curated.deskPair) },
 
   /* --- team ------------------------------------------------------------- */
-  'team-hero':     { query: 'logistics team office', photo: curated.convoy },
+  'team-hero':     { query: 'logistics team office', photo: curated.convoy, url: photo(curated.deskPair) },
   /* Real people, photographed by the client. Never stock-filled: a stranger's
      face under someone's name is a misrepresentation, not a placeholder. */
   'team-1':        { person: 'Tamar Gazashvili', skip: 'client photograph' },
@@ -107,13 +122,13 @@ export const mediaSources = {
 
   /* --- gallery ---------------------------------------------------------- */
   'gallery-1':     { query: 'semi truck front grille', photo: curated.highway, url: photo(curated.highway) },
-  'gallery-2':     { query: 'dry van trailers row', photo: curated.road },
-  'gallery-3':     { query: 'truck yard sunset', photo: curated.turbines },
-  'gallery-4':     { query: 'truck repair bay', photo: curated.country },
+  'gallery-2':     { query: 'dry van trailers row', photo: curated.road, url: photo(curated.dock) },
+  'gallery-3':     { query: 'truck yard sunset', photo: curated.turbines, url: photo(curated.turbines) },
+  'gallery-4':     { query: 'truck repair bay', photo: curated.country, url: photo(curated.shop) },
   'gallery-5':     { query: 'truck on open road', photo: curated.desert, url: photo(curated.desert) },
-  'gallery-6':     { query: 'flatbed step deck trailer', photo: curated.convoy },
-  'gallery-7':     { query: 'trailer parking lot aerial', photo: curated.road },
-  'gallery-8':     { query: 'mechanic working under truck', photo: curated.country },
+  'gallery-6':     { query: 'flatbed step deck trailer', photo: curated.convoy, url: photo(curated.convoy) },
+  'gallery-7':     { query: 'trailer parking lot aerial', photo: curated.road, url: photo(curated.dockWide) },
+  'gallery-8':     { query: 'mechanic working under truck', photo: curated.country, url: photo(curated.shop) },
   'gallery-9':     { query: 'fleet of trucks lined up', photo: curated.highway, url: photo(curated.country) },
 
   /* The scroll-driven backdrop behind [01] and [02]. Supplied by the client
@@ -121,7 +136,7 @@ export const mediaSources = {
   reel:            { skip: 'client footage — public/media/reel.mp4' },
 
   /* --- contact ---------------------------------------------------------- */
-  'contact-map':   { query: 'aerial highway interchange', photo: curated.turbines },
+  'contact-map':   { query: 'aerial highway interchange', photo: curated.turbines, url: photo(curated.highway) },
 };
 
 export const slotNames = Object.keys(mediaSources);
