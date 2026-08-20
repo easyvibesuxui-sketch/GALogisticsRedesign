@@ -6,10 +6,11 @@
  * domain needs — and this pass rewrites them at the end, so only the Pages
  * build differs and a root deployment stays byte-identical.
  *
- * Only three attributes ever carry a root-absolute path in the output: href,
- * src and data-fallback. The stylesheets contain no url(/…) and the scripts
- * build no paths, so there is nothing else to move. Protocol-relative URLs
- * (//host/…) are left alone.
+ * Two shapes carry a root-absolute path in the output: the href, src and
+ * data-fallback attributes, and url(…) inside an inline style — a remote
+ * picture holds its local plate as a background that way. The stylesheets in
+ * _astro contain no url(/…) and the scripts build no paths, so there is
+ * nothing else to move. Protocol-relative URLs (//host/…) are left alone.
  *
  * Usage: node scripts/rebase.mjs /GALogisticsRedesign
  */
@@ -47,12 +48,15 @@ const html = [];
 })(DIST);
 
 const ATTR = /\b(href|src|data-fallback)="\/(?!\/)/g;
+const CSS_URL = /url\((['"]?)\/(?!\/)/g;
 
 let moved = 0;
 for (const file of html) {
   const before = fs.readFileSync(file, 'utf8');
   let count = 0;
-  const after = before.replace(ATTR, (m, attr) => { count += 1; return `${attr}="${base}/`; });
+  const after = before
+    .replace(ATTR, (m, attr) => { count += 1; return `${attr}="${base}/`; })
+    .replace(CSS_URL, (m, quote) => { count += 1; return `url(${quote}${base}/`; });
   if (count) fs.writeFileSync(file, after);
   moved += count;
 }
