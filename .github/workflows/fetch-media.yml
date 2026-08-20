@@ -34,8 +34,15 @@ jobs:
       - run: npm ci
 
       # UNSPLASH_ACCESS_KEY is optional: with it every slot gets its own
-      # search result, without it the script uses its curated set.
-      - run: npm run media:fetch ${{ inputs.force && '-- --force' || '' }}
+      # search result, without it the script uses its curated set — though
+      # that keyless route now answers 401, so in practice the key is needed.
+      #
+      # `|| true` because an Unsplash demo application is capped at fifty API
+      # requests an hour and there are fifty-two slots: the tail of the run
+      # fails on rate limit, and the job must still commit the ones that did
+      # land. A second run an hour later fills the rest, since the fetcher
+      # keeps slots that already have a photo.
+      - run: npm run media:fetch ${{ inputs.force && '-- --force' || '' }} || true
         env:
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
