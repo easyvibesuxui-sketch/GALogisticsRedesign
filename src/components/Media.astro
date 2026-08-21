@@ -161,7 +161,28 @@ const fallback = src === remote && placeholder ? placeholder : undefined;
     height: 100%;
     object-fit: cover;
     object-position: var(--media-focus, center);
+    filter: var(--media-grade);
   }
+
+  /* The glass: a tinted pane over every picture, weighted to the edges where
+     type and captions sit, with a hairline lip to catch the light. Sits above
+     the picture and below anything the page puts inside the frame. */
+  .media__frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      linear-gradient(180deg, var(--media-veil-top) 0%, transparent 38%, var(--media-veil-bottom) 100%),
+      linear-gradient(118deg, var(--media-tint), transparent 62%);
+    box-shadow: inset 0 0 0 1px var(--media-edge);
+  }
+
+  /* A page hero already lays its own scrim over the picture to carry the
+     heading; a second pane on top of that only turns it to mud. */
+  :global(.phero) .media__frame::after { display: none; }
 
   .media__placeholder {
     position: relative;
