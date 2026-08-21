@@ -563,17 +563,36 @@ function initStickStacks() {
     const isLast = index === all.length - 1;
     if (isLast) return;
 
-    gsap.to(panel, {
-      scale: 0.94,
-      filter: 'brightness(0.62)',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: panel,
-        start: 'top top+=90',
-        end: 'bottom top',
-        scrub: true,
-      },
-    });
+    /* Where the panel actually comes to rest, read from the stylesheet rather
+       than repeated as a number here, so the two cannot drift apart. The
+       darkening then begins exactly when the panel stops moving. */
+    const stickTop = () => parseFloat(getComputedStyle(panel).top) || 0;
+
+    /* fromTo, not to: the panel has no filter of its own, and with nothing
+       numeric to start from the tween was reading its opening brightness as
+       near zero. The card slammed to black the moment it stuck and then eased
+       back UP to 0.62 as it scrolled away — the snap, and the reason it went
+       so much darker than it was ever meant to. Naming both ends fixes it
+       whatever the panel's own styles say. */
+    gsap.fromTo(panel,
+      { scale: 1, filter: 'brightness(1)' },
+      {
+        scale: 0.94,
+        /* 0.62 was already dark, and the photography inside it is graded down
+           too, so the two compounded. */
+        filter: 'brightness(0.8)',
+        /* Eased rather than linear, so it neither starts the instant the card
+           lands nor arrives abruptly; the scrub adds the catch-up that keeps
+           it smooth under a fast flick. */
+        ease: 'power1.inOut',
+        scrollTrigger: {
+          trigger: panel,
+          start: () => `top top+=${stickTop()}`,
+          end: 'bottom top',
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+        },
+      });
   });
 }
 
