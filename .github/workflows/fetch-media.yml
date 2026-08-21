@@ -16,6 +16,10 @@ on:
         description: Re-download slots that already have a photo
         type: boolean
         default: false
+      slots:
+        description: Space-separated slot names to limit the run to, e.g. "gallery-8 contact-map"
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -42,7 +46,7 @@ jobs:
       # fails on rate limit, and the job must still commit the ones that did
       # land. A second run an hour later fills the rest, since the fetcher
       # keeps slots that already have a photo.
-      - run: npm run media:fetch ${{ inputs.force && '-- --force' || '' }} || true
+      - run: npm run media:fetch -- ${{ inputs.force && '--force' || '' }} ${{ inputs.slots }} || true
         env:
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
