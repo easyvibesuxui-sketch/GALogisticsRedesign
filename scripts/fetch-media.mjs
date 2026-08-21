@@ -35,6 +35,17 @@ const EXTENSIONS = ['.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg', '.mp4'];
 /* Generated placeholders are fair game to replace; anything the client put
    there by hand is not. The manifest is written by make-placeholders.mjs. */
 const MANIFEST = path.join(MEDIA_DIR, '.generated.json');
+
+/* Which Unsplash photograph each slot ended up with. Kept so a later run can
+   avoid handing the same picture to two slots — several of these queries are
+   near neighbours ("semi trucks parked row" and "truck parking lot"), and
+   taking the top result for each put one aerial shot of a trailer yard into
+   five different places on the site. */
+const PHOTO_MANIFEST = path.join(MEDIA_DIR, '.photos.json');
+const chosen = fs.existsSync(PHOTO_MANIFEST)
+  ? JSON.parse(fs.readFileSync(PHOTO_MANIFEST, 'utf8'))
+  : {};
+const taken = new Set(Object.values(chosen));
 const generated = fs.existsSync(MANIFEST)
   ? new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')))
   : new Set();
@@ -76,7 +87,9 @@ async function download(url, destination) {
 async function viaApi(query) {
   const endpoint = new URL('https://api.unsplash.com/search/photos');
   endpoint.searchParams.set('query', query);
-  endpoint.searchParams.set('per_page', '1');
+  /* A page of candidates rather than one, so a slot whose best match is
+     already spoken for can take the next one down instead. */
+  endpoint.searchParams.set('per_page', '12');
   endpoint.searchParams.set('orientation', 'landscape');
   endpoint.searchParams.set('content_filter', 'high');
 
@@ -84,8 +97,12 @@ async function viaApi(query) {
   if (!response.ok) throw new Error(`Unsplash API ${response.status}`);
 
   const data = await response.json();
-  const photo = data.results?.[0];
+  const results = data.results || [];
+  /* Falls back to the best match if every candidate is spoken for — a
+     repeat beats an empty slot. */
+  const photo = results.find((result) => !taken.has(result.id)) || results[0];
   if (!photo) throw new Error(`no result for "${query}"`);
+  taken.add(photo.id);
 
   const src = new URL(photo.urls.raw);
   src.searchParams.set('w', String(WIDTH));
@@ -94,6 +111,7 @@ async function viaApi(query) {
   src.searchParams.set('fit', 'crop');
 
   return {
+    id: photo.id,
     url: src.href,
     credit: `${photo.user.name} (@${photo.user.username})`,
     link: photo.links.html,
@@ -143,6 +161,7 @@ for (const [slot, source] of Object.entries(mediaSources)) {
         : viaCurated(source.photo);
     const bytes = await download(picked.url, path.join(MEDIA_DIR, `${slot}.jpg`));
     clearPlaceholder(slot);
+    if (picked.id) chosen[slot] = picked.id;
     results.filled.push(`${slot} (${Math.round(bytes / 1024)} KB)`);
     if (!source.url) credits.push(`- \`${slot}\` — ${picked.credit}, ${picked.link}`);
     await sleep(KEY ? 300 : 150);
@@ -152,6 +171,7 @@ for (const [slot, source] of Object.entries(mediaSources)) {
 }
 
 fs.writeFileSync(MANIFEST, JSON.stringify([...generated].sort(), null, 2) + '\n');
+fs.writeFileSync(PHOTO_MANIFEST, JSON.stringify(chosen, null, 2) + '\n');
 
 if (credits.length) {
   fs.writeFileSync(
