@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "GA Logistics LLC \u2014 website redesign. Same content & architecture, new premium UI with scroll-driven motion.",
+  "description": "GA Logistics LLC — website redesign. Same content & architecture, new premium UI with scroll-driven motion.",
   "scripts": {
     "dev": "astro dev --host",
     "start": "astro dev --host",
@@ -13,7 +13,8 @@
     "media:list": "node src/data/media-slots.mjs",
     "media:fetch": "node scripts/fetch-media.mjs",
     "media:placeholders": "node scripts/make-placeholders.mjs",
-    "preview:file": "astro build && node scripts/build-preview.mjs"
+    "preview:file": "astro build && node scripts/build-preview.mjs",
+    "media:optimise": "node scripts/optimise-media.mjs"
   },
   "dependencies": {
     "astro": "^7.2.3",
