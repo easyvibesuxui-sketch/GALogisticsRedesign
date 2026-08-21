@@ -85,7 +85,7 @@ export const mediaSources = {
   'transportation-2':       { query: 'trucks on freeway aerial', photo: curated.turbines },
 
   'dispatching-hero':       { query: 'dispatch office monitors logistics', photo: curated.road },
-  'dispatching-1':          { query: 'logistics control room', photo: curated.country },
+  'dispatching-1':          { query: 'office desk computer monitors', photo: curated.country },
   'dispatching-2':          { query: 'route planning map screen', photo: curated.highway },
 
   'port-hero':              { query: 'container port terminal crane', photo: curated.convoy },
@@ -96,15 +96,15 @@ export const mediaSources = {
   'trailer-1':              { query: 'flatbed trailer cargo', photo: curated.convoy },
   'trailer-2':              { query: 'refrigerated trailer reefer', photo: curated.turbines },
 
-  'parking-hero':           { query: 'truck stop parking lot night', photo: curated.desert },
-  'parking-1':              { query: 'trucks parked yard', photo: curated.road },
+  'parking-hero':           { query: 'semi trucks parked row', photo: curated.desert },
+  'parking-1':              { query: 'truck parking lot', photo: curated.road },
   'parking-2':              { query: 'trailer yard aerial', photo: curated.country },
 
   'carcarrier-hero':        { query: 'car carrier trailer transport', photo: curated.convoy },
   'carcarrier-1':           { query: 'auto transport truck', photo: curated.highway },
   'carcarrier-2':           { query: 'cars loaded on trailer', photo: curated.road },
 
-  'shop-hero':              { query: 'truck repair workshop mechanic', photo: curated.country },
+  'shop-hero':              { query: 'mechanic garage workshop', photo: curated.country },
   'shop-1':                 { query: 'diesel mechanic tools', photo: curated.desert },
   'shop-2':                 { query: 'truck maintenance garage', photo: curated.turbines },
 
@@ -122,9 +122,9 @@ export const mediaSources = {
 
   /* --- gallery ---------------------------------------------------------- */
   'gallery-1':     { query: 'semi truck front grille', photo: curated.highway },
-  'gallery-2':     { query: 'dry van trailers row', photo: curated.road },
+  'gallery-2':     { query: 'semi trailers parked', photo: curated.road },
   'gallery-3':     { query: 'truck yard sunset', photo: curated.turbines },
-  'gallery-4':     { query: 'truck repair bay', photo: curated.country },
+  'gallery-4':     { query: 'truck engine repair', photo: curated.country },
   'gallery-5':     { query: 'truck on open road', photo: curated.desert },
   'gallery-6':     { query: 'flatbed step deck trailer', photo: curated.convoy },
   'gallery-7':     { query: 'trailer parking lot aerial', photo: curated.road },
