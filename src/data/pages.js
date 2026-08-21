@@ -12,6 +12,10 @@ export const home = {
     heading: 'Trucking that moves on our own wheels.',
     // verbatim
     lead: 'GA Logistics LLC is an asset-based carrier operating 100+ trucks across the United States, providing nationwide transportation with full operational control and ensuring consistent service and on-time delivery for every load.',
+    /* The lead is no longer drawn in the hero — the heading carries it alone
+       now — but it is verbatim from the live site, so it stays here rather
+       than being deleted. */
+    cardLabel: 'Start here',
     actions: [
       { label: 'Contact Us', href: '/contact-us/', variant: 'primary' },
       { label: 'Our Services', href: '/our-services/', variant: 'ghost' },

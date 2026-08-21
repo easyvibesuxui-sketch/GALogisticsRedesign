@@ -37,18 +37,27 @@ const {
     <div class="hero__copy" data-hero-copy>
       <p class="u-eyebrow hero__eyebrow" data-reveal="up" data-reveal-delay="320">{hero.eyebrow}</p>
       <h1 class="hero__title" data-split data-split-step="105" data-reveal-delay="380">{hero.heading}</h1>
-      <p class="hero__lead" data-reveal="blur" data-reveal-delay="760">{hero.lead}</p>
-      {hero.actions && (
-        <div class="hero__actions" data-reveal-group="90" data-reveal-delay="880">
+    </div>
+
+    <!-- The card is a pane of glass over the footage rather than a solid
+         panel: it holds the two calls to action away from the heading, and
+         the moving picture stays readable through it. -->
+    {hero.actions && (
+      <aside class="hero__card" data-reveal="up" data-reveal-delay="760">
+        <div class="hero__card-top">
+          <span class="hero__card-label">{hero.cardLabel}</span>
+          <span class="hero__card-dot" aria-hidden="true"></span>
+        </div>
+        <span class="hero__card-rule" aria-hidden="true"></span>
+        <div class="hero__card-actions" data-reveal-group="90" data-reveal-delay="860">
           {hero.actions.map((action) => (
             <div data-reveal="up">
               <Button href={action.href} label={action.label} variant={action.variant} />
             </div>
           ))}
         </div>
-      )}
-    </div>
-
+      </aside>
+    )}
   </div>
 
   <div class="shell hero__foot">
@@ -151,13 +160,13 @@ const {
   .hero__main {
     width: 100%;
     display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(17rem, 24vw, 22rem);
     align-items: end;
+    gap: clamp(2rem, 1rem + 3vw, 4rem);
     padding-block: clamp(2rem, 1.25rem + 2.6vw, 3.5rem) 0;
   }
 
-  /* Bounded so the headline breaks where it is meant to and the footage to
-     the right of it stays open. */
-  .hero__copy { max-width: min(100%, 62ch); }
+  .hero__copy { min-width: 0; }
 
   .hero__title {
     margin-top: 1.15rem;
@@ -171,20 +180,76 @@ const {
     text-wrap: balance;
   }
 
-  .hero__lead {
-    margin-top: clamp(1.25rem, 0.9rem + 1.1vw, 2rem);
-    max-width: 52ch;
-    font-size: var(--fs-body);
-    line-height: 1.6;
-    color: rgba(242, 243, 244, 0.68);
-    letter-spacing: -0.008em;
+  /* --- the glass card -----------------------------------------------------
+     A pane over the footage rather than a panel on top of it: translucent,
+     blurred behind, with a lit top edge and a shadow underneath so it reads
+     as a sheet lifted off the picture. The two calls to action stack full
+     width inside it, which also settles the old problem of two pill buttons
+     leaning into each other on a narrow screen.
+     ------------------------------------------------------------------------ */
+  .hero__card {
+    align-self: end;
+    padding: clamp(1.15rem, 0.9rem + 0.7vw, 1.6rem);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0.04) 46%,
+      rgba(255, 255, 255, 0.06) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 24px 60px -24px rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(18px) saturate(1.15);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
   }
 
-  .hero__actions {
-    margin-top: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
+  /* Where the backdrop cannot be blurred the pane would be a pale wash over
+     moving footage, so it falls back to a solid, quieter card. */
+  @supports not (backdrop-filter: blur(4px)) {
+    .hero__card { background: rgba(16, 19, 23, 0.88); }
+  }
+
+  .hero__card-top {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .hero__card-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(242, 243, 244, 0.82);
+  }
+
+  .hero__card-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--brand-500);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-500) 18%, transparent);
+  }
+
+  .hero__card-rule {
+    display: block;
+    height: 1px;
+    margin-block: clamp(1.5rem, 1rem + 2vw, 2.75rem) clamp(1rem, 0.8rem + 0.6vw, 1.35rem);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06));
+  }
+
+  .hero__card-actions {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  /* The buttons fill the card so the two read as one stack rather than as a
+     pair that happens to sit near each other. */
+  .hero__card-actions :global(.btn) {
+    width: 100%;
+    justify-content: space-between;
   }
 
   /* --- foot -------------------------------------------------------------- */
@@ -231,9 +296,17 @@ const {
   /* Below the two-column breakpoint the card drops under the copy, so it
      folds into a single bar — a stacked card pushes the whole hero past the
      fold on a tablet. */
+  @media (max-width: 860px) {
+    .hero__main {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+    }
+    .hero__card { max-width: 26rem; }
+  }
+
   @media (max-width: 560px) {
     .hero__bandtail { letter-spacing: 0.14em; }
-    .hero__actions { gap: 1rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
