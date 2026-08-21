@@ -629,28 +629,42 @@ function initMagnetic() {
     const label = el.querySelector('.btn__label');
 
     const move = (event) => {
+      /* Measured from where the button RESTS, not from where it currently
+         sits. getBoundingClientRect reports the transformed box, so measuring
+         from that fed each nudge back into the next: the button leaned
+         towards the pointer, the offset it read then shrank, it eased back,
+         the offset grew again — a slow wobble that read as the button
+         sliding away from the cursor. Subtracting the applied transform
+         gives a fixed anchor, so a still pointer means a still button. */
+      const applied = { x: Number(gsap.getProperty(el, 'x')) || 0, y: Number(gsap.getProperty(el, 'y')) || 0 };
       const rect = el.getBoundingClientRect();
-      const x = event.clientX - (rect.left + rect.width / 2);
-      const y = event.clientY - (rect.top + rect.height / 2);
+      const x = event.clientX - (rect.left + rect.width / 2 - applied.x);
+      const y = event.clientY - (rect.top + rect.height / 2 - applied.y);
 
       /* Capped travel: unclamped, a wide button leans far enough to sit on top
          of the control beside it. */
-      const limit = Math.min(18, rect.height * 0.34);
+      const limit = Math.min(10, rect.height * 0.2);
       const pull = (value) => gsap.utils.clamp(-limit, limit, value * strength);
 
-      gsap.to(el, { x: pull(x), y: pull(y), duration: 0.6, ease: 'power3.out' });
+      gsap.to(el, { x: pull(x), y: pull(y), duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
       if (label) {
-        gsap.to(label, { x: pull(x) * 0.4, y: pull(y) * 0.4, duration: 0.6, ease: 'power3.out' });
+        gsap.to(label, { x: pull(x) * 0.35, y: pull(y) * 0.35, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
       }
     };
 
+    /* Settles rather than springs: an elastic return overshoots past the
+       resting place, which on a button the pointer has only just left looks
+       like it is still moving on its own. */
     const reset = () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.4)' });
-      if (label) gsap.to(label, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.4)' });
+      gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
+      if (label) gsap.to(label, { x: 0, y: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
     };
 
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', reset);
+    /* A click can move focus and scroll the page out from under the pointer,
+       leaving the lean stuck. */
+    el.addEventListener('blur', reset);
   });
 }
 
